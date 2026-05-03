@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'">
+                <span class="menuIcon">👤</span>用户管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'">
+                <span class="menuIcon">🏢</span>机构管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'">
+                <span class="menuIcon">👥</span>机构人员
+            </div>
+            <div class="menuItem active">
+                <span class="menuIcon">🔑</span>角色管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <!-- 主区域 -->
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">角色管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">角色名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入角色名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">角色编码</span>
+                    <input class="queryInput" type="text" placeholder="请输入角色编码" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">类型</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>内置</option>
+                        <option>自定义</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">角色列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 新增角色</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>角色名称</th>
+                                <th>角色编码</th>
+                                <th>类型</th>
+                                <th>状态</th>
+                                <th>用户数</th>
+                                <th>描述</th>
+                                <th>创建时间</th>
+                                <th style="width:180px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="linkCell" onclick="openDetailModal('租户管理员')">租户管理员</span></td>
+                                <td>TENANT_ADMIN</td>
+                                <td><span class="tag tagInfo">内置</span></td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>3</td>
+                                <td>拥有租户内所有管理权限</td>
+                                <td>2026-01-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('租户管理员')">详情</button>
+                                        <button class="btnLink" onclick="openPermModal()">授权</button>
+                                        <button class="btnLink" style="color:#8c8c8c;cursor:not-allowed;">编辑</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="linkCell" onclick="openDetailModal('业务员')">业务员</span></td>
+                                <td>BUSINESS_STAFF</td>
+                                <td><span class="tag tagDefault">自定义</span></td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>8</td>
+                                <td>负责日常业务操作</td>
+                                <td>2026-01-05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('业务员')">详情</button>
+                                        <button class="btnLink" onclick="openPermModal()">授权</button>
+                                        <button class="btnLink" onclick="openEditModal('业务员')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="linkCell" onclick="openDetailModal('审计员')">审计员</span></td>
+                                <td>AUDITOR</td>
+                                <td><span class="tag tagDefault">自定义</span></td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2</td>
+                                <td>负责审计日志查看</td>
+                                <td>2026-01-05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('审计员')">详情</button>
+                                        <button class="btnLink" onclick="openPermModal()">授权</button>
+                                        <button class="btnLink" onclick="openEditModal('审计员')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="linkCell" onclick="openDetailModal('风控专员')">风控专员</span></td>
+                                <td>RISK_CONTROL</td>
+                                <td><span class="tag tagDefault">自定义</span></td>
+                                <td><span class="tag tagDanger">禁用</span></td>
+                                <td>1</td>
+                                <td>负责风险控制相关操作</td>
+                                <td>2026-02-10</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('风控专员')">详情</button>
+                                        <button class="btnLink" onclick="openPermModal()">授权</button>
+                                        <button class="btnLink" onclick="openEditModal('风控专员')">编辑</button>
+                                        <button class="btnLink" onclick="confirmEnable()">启用</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 4 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑角色弹窗 -->
+<div class="modalOverlay" id="roleModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="roleModalTitle">新增角色</span>
+            <span class="modalClose" onclick="closeModal('roleModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">角色名称</div>
+                <div class="field"><input type="text" id="roleNameInput" placeholder="请输入角色名称" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">角色编码</div>
+                <div class="field"><input type="text" id="roleCodeInput" placeholder="如：BUSINESS_STAFF" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">描述</div>
+                <div class="field"><textarea placeholder="请输入角色描述"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('roleModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('roleModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 授权弹窗 -->
+<div class="modalOverlay" id="permModal" style="display:none;">
+    <div class="modal" style="width:600px;">
+        <div class="modalHeader">
+            <span class="modalTitle">角色授权 - 业务员</span>
+            <span class="modalClose" onclick="closeModal('permModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:12px;font-size:13px;color:#8a8b8e;">勾选该角色拥有的权限点</div>
+            <div style="border:1px solid #ecedf0;border-radius:4px;overflow:hidden;">
+                <div style="padding:10px 16px;background:#fafafa;font-size:13px;font-weight:500;color:#26272a;border-bottom:1px solid #ecedf0;">用户管理</div>
+                <div style="padding:8px 16px 8px 32px;display:flex;flex-wrap:wrap;gap:12px;border-bottom:1px solid #ecedf0;">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" checked /> 查看用户</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 新增用户</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 编辑用户</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 禁用用户</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 重置密码</label>
+                </div>
+                <div style="padding:10px 16px;background:#fafafa;font-size:13px;font-weight:500;color:#26272a;border-bottom:1px solid #ecedf0;">机构管理</div>
+                <div style="padding:8px 16px 8px 32px;display:flex;flex-wrap:wrap;gap:12px;border-bottom:1px solid #ecedf0;">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" checked /> 查看机构</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 新增机构</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 编辑机构</label>
+                </div>
+                <div style="padding:10px 16px;background:#fafafa;font-size:13px;font-weight:500;color:#26272a;border-bottom:1px solid #ecedf0;">审计日志</div>
+                <div style="padding:8px 16px 8px 32px;display:flex;flex-wrap:wrap;gap:12px;">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 查看审计日志</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4e5464;cursor:pointer;"><input type="checkbox" /> 查看访问日志</label>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('permModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('permModal')">保存授权</button>
+        </div>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modalOverlay" id="detailModal" style="display:none;">
+    <div class="modal" style="width:560px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="detailModalTitle">角色详情</span>
+            <span class="modalClose" onclick="closeModal('detailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="infoGrid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+                <div class="infoItem">
+                    <span class="label">角色名称：</span>
+                    <span class="value" id="detailRoleName">业务员</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">角色编码：</span>
+                    <span class="value">BUSINESS_STAFF</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">类型：</span>
+                    <span class="value"><span class="tag tagDefault">自定义</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">状态：</span>
+                    <span class="value"><span class="tag tagSuccess">启用</span></span>
+                </div>
+                <div class="infoItem" style="grid-column:span 2;">
+                    <span class="label">描述：</span>
+                    <span class="value">负责日常业务操作</span>
+                </div>
+            </div>
+            <div style="font-size:14px;font-weight:500;color:#26272a;margin-bottom:8px;">已授权限（2项）</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <span class="tag tagInfo">查看用户</span>
+                <span class="tag tagInfo">查看机构</span>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('detailModal')">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('roleModalTitle').textContent = '新增角色';
+    document.getElementById('roleNameInput').value = '';
+    document.getElementById('roleCodeInput').value = '';
+    document.getElementById('roleModal').style.display = 'flex';
+}
+function openEditModal(name) {
+    document.getElementById('roleModalTitle').textContent = '编辑角色';
+    document.getElementById('roleNameInput').value = name;
+    document.getElementById('roleModal').style.display = 'flex';
+}
+function openPermModal() { document.getElementById('permModal').style.display = 'flex'; }
+function openDetailModal(name) {
+    document.getElementById('detailModalTitle').textContent = '角色详情 - ' + name;
+    document.getElementById('detailRoleName').textContent = name;
+    document.getElementById('detailModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmInvalid() { if(confirm('确认将该角色置为无效？置无效后该角色将从列表中不可见。')) {} }
+function confirmEnable() { if(confirm('确认启用该角色？')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

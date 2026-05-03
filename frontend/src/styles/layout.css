@@ -1,0 +1,378 @@
+.layout-root {
+  width: 100%;
+}
+
+.pageContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-page);
+}
+
+.layoutBody {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 15%;
+  max-width: 265px;
+  min-width: 180px;
+  height: 100%;
+  background: var(--bg-card);
+  border-right: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.sidebarLogo {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.sidebarLogoImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.sidebarLogoText {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.sidebarMenu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.menuGroupTitle {
+  padding: 10px 16px 4px;
+  font-size: 11px;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menuGroupToggle {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.menuSubList {
+  padding-bottom: 4px;
+}
+
+.menuSubItem {
+  padding: 9px 16px 9px 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-main);
+  border-left: 3px solid transparent;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+
+.menuSubItem:hover {
+  background: var(--bg-page);
+  color: var(--primary);
+  border-left-color: var(--primary);
+}
+
+.menuSubItem.active {
+  background: color-mix(in srgb, var(--primary) 12%, var(--bg-card));
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 500;
+}
+
+.menuItem {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-main);
+  border-left: 3px solid transparent;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+
+.menuItem:hover {
+  background: var(--bg-page);
+  color: var(--primary);
+  border-left-color: var(--primary);
+}
+
+.menuItem.active {
+  background: color-mix(in srgb, var(--primary) 12%, var(--bg-card));
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 500;
+}
+
+.menuIcon {
+  font-size: 15px;
+  width: 18px;
+  text-align: center;
+}
+
+.mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.appHeader {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  background: #008c8c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.appHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.appHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerTool {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.headerTool:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.headerUser {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+}
+
+.userDropdown {
+  position: absolute;
+  top: 48px;
+  right: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: var(--shadow-card);
+  min-width: 160px;
+  z-index: 999;
+}
+
+.userDropdownItem {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+
+.userDropdownItem:last-child {
+  border-bottom: none;
+}
+
+.userDropdownItem:hover {
+  background: var(--bg-page);
+  color: var(--primary);
+}
+
+.userDropdownBtn {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+}
+
+.appContent {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.homeDash .statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.homeDash .statCard {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.homeDash .statValue {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+.homeDash .statLabel {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+
+.homeDash .navSection {
+  margin-bottom: 24px;
+}
+
+.homeDash .navSectionTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.homeDash .navGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.homeDash .navCard {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.homeDash .navCard:hover {
+  box-shadow: var(--shadow-card);
+  border-color: var(--primary);
+}
+
+.homeDash .navCardIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.homeDash .iconTeal {
+  background: color-mix(in srgb, var(--primary) 14%, var(--bg-card));
+}
+.homeDash .iconBlue {
+  background: color-mix(in srgb, #1677ff 14%, var(--bg-card));
+}
+.homeDash .iconGreen {
+  background: color-mix(in srgb, #52c41a 14%, var(--bg-card));
+}
+.homeDash .iconOrange {
+  background: color-mix(in srgb, #fa8c16 14%, var(--bg-card));
+}
+.homeDash .iconPurple {
+  background: color-mix(in srgb, #722ed1 14%, var(--bg-card));
+}
+.homeDash .iconGray {
+  background: var(--bg-page);
+}
+
+.homeDash .navCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.homeDash .navCardTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.homeDash .navCardDesc {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.homeDash .navCardLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--primary);
+}

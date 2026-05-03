@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>消息中心 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .msgLayout { display: flex; gap: 16px; }
+        .msgLeft {
+            width: 220px;
+            flex-shrink: 0;
+            background: #fff;
+            border: 1px solid #ecedf0;
+            border-radius: 4px;
+            padding: 8px 0;
+        }
+        .msgCatItem {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #4e5464;
+            border-left: 3px solid transparent;
+            transition: background 0.15s;
+        }
+        .msgCatItem:hover { background: #f5f7fa; color: #008c8c; }
+        .msgCatItem.active { background: #e6f7f7; color: #008c8c; font-weight: 500; border-left-color: #008c8c; }
+        .msgBadge {
+            background: #ff4d4f;
+            color: #fff;
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        .msgRight { flex: 1; min-width: 0; }
+        .msgItem {
+            padding: 14px 16px;
+            border-bottom: 1px solid #ecedf0;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: background 0.15s;
+        }
+        .msgItem:hover { background: #f5f7fa; }
+        .msgItem:last-child { border-bottom: none; }
+        .msgItem.unread { background: #fafeff; }
+        .msgDot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #008c8c;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+        .msgDot.read { background: transparent; }
+        .msgBody { flex: 1; min-width: 0; }
+        .msgTitle {
+            font-size: 14px;
+            color: #26272a;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .msgItem:not(.unread) .msgTitle { font-weight: 400; color: #4e5464; }
+        .msgPreview {
+            font-size: 13px;
+            color: #8a8b8e;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .msgMeta {
+            font-size: 12px;
+            color: #8a8b8e;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .msgTypeTag {
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 2px;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem active"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool" style="position:relative;">
+                    🔔
+                    <span style="position:absolute;top:-4px;right:-4px;background:#ff4d4f;color:#fff;font-size:10px;padding:0 4px;border-radius:8px;">3</span>
+                </div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">消息中心</span>
+        </div>
+        <div class="content">
+            <div class="msgLayout">
+                <!-- 左侧分类 -->
+                <div class="msgLeft">
+                    <div class="msgCatItem active" onclick="selectCat(this)">
+                        <span>全部消息</span>
+                        <span class="msgBadge">3</span>
+                    </div>
+                    <div class="msgCatItem" onclick="selectCat(this)">
+                        <span>安全提醒</span>
+                        <span class="msgBadge">2</span>
+                    </div>
+                    <div class="msgCatItem" onclick="selectCat(this)">
+                        <span>管理提醒</span>
+                        <span class="msgBadge">1</span>
+                    </div>
+                    <div class="msgCatItem" onclick="selectCat(this)">
+                        <span>系统公告</span>
+                    </div>
+                </div>
+
+                <!-- 右侧消息列表 -->
+                <div class="msgRight">
+                    <div class="tableBox">
+                        <div class="tableHeader">
+                            <div class="tableTitle">消息列表 <span style="font-size:13px;color:#8a8b8e;font-weight:400;">（3条未读）</span></div>
+                            <div class="tableActions">
+                                <button class="btn btnDefault" onclick="markAllRead()">全部已读</button>
+                            </div>
+                        </div>
+                        <div id="msgList">
+                            <!-- 未读消息 -->
+                            <div class="msgItem unread" onclick="openMsgDetail(this,'登录异常提醒')">
+                                <div class="msgDot"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagDanger">安全提醒</span></div>
+                                    <div class="msgTitle">您的账号在异常IP登录</div>
+                                    <div class="msgPreview">检测到您的账号于 2026-04-27 09:12 在 IP 10.0.0.123 登录，若非本人操作请立即修改密码。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>刚刚</div>
+                                </div>
+                            </div>
+                            <div class="msgItem unread" onclick="openMsgDetail(this,'密码即将到期')">
+                                <div class="msgDot"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagWarning">安全提醒</span></div>
+                                    <div class="msgTitle">您的密码将于 7 天后到期</div>
+                                    <div class="msgPreview">请及时修改密码，避免账号被锁定影响正常使用。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>2小时前</div>
+                                </div>
+                            </div>
+                            <div class="msgItem unread" onclick="openMsgDetail(this,'角色变更通知')">
+                                <div class="msgDot"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagInfo">管理提醒</span></div>
+                                    <div class="msgTitle">您的角色已被修改</div>
+                                    <div class="msgPreview">管理员 zhangsan 于 2026-04-26 16:20 修改了您的角色，新角色：业务员。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>昨天</div>
+                                </div>
+                            </div>
+                            <!-- 已读消息 -->
+                            <div class="msgItem" onclick="openMsgDetail(this,'系统维护公告')">
+                                <div class="msgDot read"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagDefault">系统公告</span></div>
+                                    <div class="msgTitle">系统将于本周六凌晨进行维护</div>
+                                    <div class="msgPreview">系统计划于 2026-04-26 00:00-04:00 进行例行维护，期间服务不可用，请提前做好安排。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>2026-04-24</div>
+                                </div>
+                            </div>
+                            <div class="msgItem" onclick="openMsgDetail(this,'账号禁用通知')">
+                                <div class="msgDot read"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagDanger">管理提醒</span></div>
+                                    <div class="msgTitle">用户 wangwu 已被禁用</div>
+                                    <div class="msgPreview">管理员 zhangsan 于 2026-04-26 16:20 禁用了用户 wangwu（王五）。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>2026-04-26</div>
+                                </div>
+                            </div>
+                            <div class="msgItem" onclick="openMsgDetail(this,'新用户创建通知')">
+                                <div class="msgDot read"></div>
+                                <div class="msgBody">
+                                    <div><span class="msgTypeTag tag tagInfo">管理提醒</span></div>
+                                    <div class="msgTitle">新用户 sunqi 已创建</div>
+                                    <div class="msgPreview">管理员 zhangsan 于 2026-04-27 10:05 创建了新用户 sunqi（孙七），归属机构：华东分部。</div>
+                                </div>
+                                <div class="msgMeta">
+                                    <div>2026-04-27</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination">
+                            <span class="pageInfo">共 6 条</span>
+                            <button class="pageBtn" disabled>«</button>
+                            <button class="pageBtn" disabled>‹</button>
+                            <button class="pageBtn active">1</button>
+                            <button class="pageBtn" disabled>›</button>
+                            <button class="pageBtn" disabled>»</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 消息详情弹窗 -->
+<div class="modalOverlay" id="msgDetailModal" style="display:none;">
+    <div class="modal" style="width:560px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="msgDetailTitle">消息详情</span>
+            <span class="modalClose" onclick="closeModal('msgDetailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:12px;">
+                <span class="tag tagDanger" id="msgDetailType">安全提醒</span>
+                <span style="font-size:12px;color:#8a8b8e;margin-left:8px;" id="msgDetailTime">2026-04-27 09:12</span>
+            </div>
+            <div style="font-size:15px;font-weight:500;color:#26272a;margin-bottom:12px;" id="msgDetailSubject">您的账号在异常IP登录</div>
+            <div style="font-size:14px;color:#4e5464;line-height:1.8;" id="msgDetailContent">
+                检测到您的账号于 2026-04-27 09:12 在 IP 10.0.0.123 登录，若非本人操作请立即修改密码并联系管理员。
+                <br><br>
+                登录详情：<br>
+                - 登录时间：2026-04-27 09:12:33<br>
+                - 登录IP：10.0.0.123<br>
+                - 设备：Windows Chrome 124
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('msgDetailModal')">关闭</button>
+            <button class="btn btnPrimary" onclick="location.href='prototype-profile.html';closeModal('msgDetailModal')">去修改密码</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectCat(el) {
+    document.querySelectorAll('.msgCatItem').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+}
+function markAllRead() {
+    document.querySelectorAll('.msgItem.unread').forEach(item => {
+        item.classList.remove('unread');
+        item.querySelector('.msgDot').classList.add('read');
+        const title = item.querySelector('.msgTitle');
+        title.style.fontWeight = '400';
+        title.style.color = '#4e5464';
+    });
+    document.querySelectorAll('.msgBadge').forEach(b => b.remove());
+}
+function openMsgDetail(el, title) {
+    el.classList.remove('unread');
+    const dot = el.querySelector('.msgDot');
+    if (dot) { dot.classList.add('read'); }
+    document.getElementById('msgDetailTitle').textContent = title;
+    document.getElementById('msgDetailModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

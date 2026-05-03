@@ -1,0 +1,56 @@
+baseproject:
+  security:
+    default-password: Admin@123456
+  auth:
+    # 子域隐含 tenant_code：{label}.{base-host}；显式 tenantCode 优先；platform 为保留子域不解析。生产需网关传真实 Host 或 X-Forwarded-Host。
+    tenant-from-host:
+      enabled: false
+      base-host: ""
+      reserved-labels:
+        - www
+        - api
+        - platform
+  org:
+    delete:
+      require-empty-children: true
+      require-no-users: true
+  ops-logs:
+    mode: none
+    external-url: ""
+    loki-base-url: ""
+
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: baseproject-backend
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: assign_id
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+logging:
+  level:
+    root: info
+    com.baseproject: debug
+  file:
+    path: logs
+    name: logs/baseproject-backend.log

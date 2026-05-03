@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    dynamic:
+      primary: core
+      strict: false
+      datasource:
+        core:
+          url: jdbc:mysql://127.0.0.1:3306/baseproject?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        biz:
+          url: jdbc:mysql://127.0.0.1:3306/baseproject?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    timeout: 3000ms
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: base-project
+
+# 子域租户：hosts 增加 127.0.0.1 default.localhost 与 127.0.0.1 acme.localhost；前端 dev 设 VITE_API_BASE_URL 为空串走 Vite 代理，vite 将 /auth 转发到 8080 并保留浏览器 Host。
+# 生产置于 Nginx/Ingress 后时可设 spring.forward-headers-strategy: framework，以便识别 X-Forwarded-Host。
+baseproject:
+  auth:
+    tenant-from-host:
+      enabled: true
+      base-host: localhost
+      reserved-labels:
+        - www
+        - api
+        - platform
+

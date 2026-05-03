@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>船舶管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .statusTag { font-size: 12px; padding: 2px 8px; border-radius: 2px; }
+        .statusTag.purchasing { background: #e8f4ff; color: #1890ff; }
+        .statusTag.waiting { background: #fff7e6; color: #fa8c16; }
+        .statusTag.leasing { background: #e8f8f2; color: #00b87a; }
+        .statusTag.disposed { background: #f5f5f5; color: #8c8c8c; }
+        .statusTag.recovered { background: #f9f0ff; color: #722ed1; }
+        .statusTag.scrapped { background: #fff1f0; color: #ff4d4f; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem active"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'"><span>👤</span>个人设置</div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'"><span>🚪</span>退出登录</div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">船舶业务</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">船舶管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">船舶编号</span>
+                    <input class="queryInput" type="text" placeholder="请输入船舶编号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">船舶名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入船舶名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>购置中</option>
+                        <option>待租</option>
+                        <option>在租</option>
+                        <option>已处置</option>
+                        <option>已回收</option>
+                        <option>已报废</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">买卖合同</span>
+                    <input class="queryInput" type="text" placeholder="请输入合同编号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">船舶类型</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>杂货船</option>
+                        <option>散货船</option>
+                        <option>木材船</option>
+                        <option>冷藏船</option>
+                        <option>滚装船</option>
+                        <option>载驳船</option>
+                        <option>集装箱船</option>
+                        <option>油轮</option>
+                        <option>化学品船</option>
+                        <option>沥青船</option>
+                        <option>工作船舶（拖船）</option>
+                        <option>工作船舶（引航船）</option>
+                        <option>工作船舶（破冰船）</option>
+                        <option>工作船舶（供给船）</option>
+                        <option>工作船舶（科学考察船）</option>
+                        <option>工作船舶（消防船）</option>
+                        <option>其他船舶</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">所有权人</span>
+                    <input class="queryInput" type="text" placeholder="请输入所有权人" />
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">船舶列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px;">序号</th>
+                                <th>船舶编号</th>
+                                <th>船舶名称</th>
+                                <th>状态</th>
+                                <th>买卖合同</th>
+                                <th>船壳号IMO</th>
+                                <th>MMSI编号</th>
+                                <th>船舶类型</th>
+                                <th>所有权人</th>
+                                <th>确认收到日期</th>
+                                <th>估值曲线</th>
+                                <th>资产原值</th>
+                                <th>资产净值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>SH-2026-001</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋1号</span></td>
+                                <td><span class="statusTag leasing">在租</span></td>
+                                <td>BM-2026-0101</td>
+                                <td>9876543</td>
+                                <td>412345001</td>
+                                <td>散货船</td>
+                                <td>浙商融资租赁</td>
+                                <td>2026-01-15</td>
+                                <td><span class="linkCell" onclick="openChartModal('浙商远洋1号','9876543')">📈 查看</span></td>
+                                <td>3,200万</td>
+                                <td>2,950万</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>SH-2026-002</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋2号</span></td>
+                                <td><span class="statusTag leasing">在租</span></td>
+                                <td>BM-2026-0102</td>
+                                <td>9876544</td>
+                                <td>412345002</td>
+                                <td>集装箱船</td>
+                                <td>浙商融资租赁</td>
+                                <td>2026-02-01</td>
+                                <td><span class="linkCell" onclick="openChartModal('浙商远洋2号','9876544')">📈 查看</span></td>
+                                <td>4,500万</td>
+                                <td>4,200万</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>SH-2026-003</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋3号</span></td>
+                                <td><span class="statusTag waiting">待租</span></td>
+                                <td>BM-2026-0103</td>
+                                <td>9876545</td>
+                                <td>412345003</td>
+                                <td>散货船</td>
+                                <td>浙商融资租赁</td>
+                                <td>2026-01-20</td>
+                                <td><span class="linkCell" onclick="openChartModal('浙商远洋3号','9876545')">📈 查看</span></td>
+                                <td>2,900万</td>
+                                <td>2,700万</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>SH-2026-004</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋4号</span></td>
+                                <td><span class="statusTag purchasing">购置中</span></td>
+                                <td>BM-2026-0104</td>
+                                <td>9876546</td>
+                                <td>412345004</td>
+                                <td>集装箱船</td>
+                                <td>华海船舶租赁</td>
+                                <td>—</td>
+                                <td><span class="linkCell" onclick="openChartModal('浙商远洋4号','9876546')">📈 查看</span></td>
+                                <td>3,800万</td>
+                                <td>3,800万</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>SH-2026-005</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">华海通达号</span></td>
+                                <td><span class="statusTag leasing">在租</span></td>
+                                <td>BM-2026-0105</td>
+                                <td>9876547</td>
+                                <td>412345005</td>
+                                <td>油轮</td>
+                                <td>华海船舶租赁</td>
+                                <td>2025-11-10</td>
+                                <td><span class="linkCell" onclick="openChartModal('华海通达号','9876547')">📈 查看</span></td>
+                                <td>6,800万</td>
+                                <td>6,100万</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>SH-2026-006</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">近海先锋号</span></td>
+                                <td><span class="statusTag disposed">已处置</span></td>
+                                <td>BM-2025-0088</td>
+                                <td>9876548</td>
+                                <td>412345006</td>
+                                <td>杂货船</td>
+                                <td>远洋金融租赁</td>
+                                <td>2025-06-01</td>
+                                <td><span class="linkCell" onclick="openChartModal('近海先锋号','9876548')">📈 查看</span></td>
+                                <td>1,500万</td>
+                                <td>800万</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>SH-2026-007</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">内河顺达号</span></td>
+                                <td><span class="statusTag recovered">已回收</span></td>
+                                <td>BM-2025-0076</td>
+                                <td>9876549</td>
+                                <td>412345007</td>
+                                <td>冷藏船</td>
+                                <td>浙商融资租赁</td>
+                                <td>2025-03-15</td>
+                                <td><span class="linkCell" onclick="openChartModal('内河顺达号','9876549')">📈 查看</span></td>
+                                <td>980万</td>
+                                <td>620万</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>SH-2026-008</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">东方明珠号</span></td>
+                                <td><span class="statusTag scrapped">已报废</span></td>
+                                <td>BM-2024-0055</td>
+                                <td>9876550</td>
+                                <td>412345008</td>
+                                <td>化学品船</td>
+                                <td>东方航运租赁</td>
+                                <td>2024-08-20</td>
+                                <td><span class="linkCell" onclick="openChartModal('东方明珠号','9876550')">📈 查看</span></td>
+                                <td>2,100万</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 8 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 估值曲线弹窗 -->
+<div class="modalOverlay" id="chartModal" style="display:none;">
+    <div class="modal" style="width:780px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="chartModalTitle">估值曲线图</span>
+            <span class="modalClose" onclick="closeModal('chartModal')">✕</span>
+        </div>
+        <div class="modalBody" style="padding:16px 24px;">
+            <div id="chartArea" style="width:100%;height:380px;position:relative;background:#fafafa;border:1px solid #ecedf0;border-radius:4px;padding:16px;">
+                <!-- 图表标题 -->
+                <div style="text-align:center;font-size:15px;font-weight:500;color:#26272a;margin-bottom:16px;" id="chartTitle">浙商远洋1号 (IMO: 9876543)</div>
+                <!-- Y轴标签 -->
+                <div style="position:absolute;left:8px;top:50%;transform:rotate(-90deg) translateX(-50%);font-size:12px;color:#8a8b8e;white-space:nowrap;">美元（百万）</div>
+                <!-- 图表区域 SVG -->
+                <svg viewBox="0 0 680 280" style="width:100%;height:280px;" id="chartSvg">
+                    <!-- 网格线 -->
+                    <line x1="50" y1="20" x2="50" y2="240" stroke="#ecedf0" stroke-width="1"/>
+                    <line x1="50" y1="240" x2="660" y2="240" stroke="#ecedf0" stroke-width="1"/>
+                    <line x1="50" y1="185" x2="660" y2="185" stroke="#ecedf0" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="50" y1="130" x2="660" y2="130" stroke="#ecedf0" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="50" y1="75" x2="660" y2="75" stroke="#ecedf0" stroke-width="0.5" stroke-dasharray="4"/>
+                    <line x1="50" y1="20" x2="660" y2="20" stroke="#ecedf0" stroke-width="0.5" stroke-dasharray="4"/>
+                    <!-- Y轴刻度 -->
+                    <text x="45" y="244" text-anchor="end" font-size="11" fill="#8a8b8e">0</text>
+                    <text x="45" y="189" text-anchor="end" font-size="11" fill="#8a8b8e">10</text>
+                    <text x="45" y="134" text-anchor="end" font-size="11" fill="#8a8b8e">20</text>
+                    <text x="45" y="79" text-anchor="end" font-size="11" fill="#8a8b8e">30</text>
+                    <text x="45" y="24" text-anchor="end" font-size="11" fill="#8a8b8e">40</text>
+                    <!-- X轴刻度 -->
+                    <text x="50" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2022</text>
+                    <text x="172" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2023</text>
+                    <text x="294" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2024</text>
+                    <text x="416" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2025</text>
+                    <text x="538" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2026</text>
+                    <text x="660" y="258" text-anchor="middle" font-size="11" fill="#8a8b8e">2027</text>
+                    <!-- 新船价格 - 蓝色 -->
+                    <polyline points="50,42 172,48 294,53 416,59 538,64 660,70" fill="none" stroke="#1890ff" stroke-width="2"/>
+                    <!-- 拆船价格 - 灰色 -->
+                    <polyline points="50,218 172,213 294,210 416,207 538,204 660,201" fill="none" stroke="#8c8c8c" stroke-width="2" stroke-dasharray="6"/>
+                    <!-- 资产估值 - 绿色 -->
+                    <polyline points="50,75 172,90 294,105 416,115 538,125 660,135" fill="none" stroke="#00b87a" stroke-width="2.5"/>
+                    <!-- 人工估值 - 橙色 -->
+                    <polyline points="50,80 172,95 294,100 416,120 538,130 660,140" fill="none" stroke="#fa8c16" stroke-width="2" stroke-dasharray="4"/>
+                    <!-- 安全线 - 红色 -->
+                    <polyline points="50,152 172,152 294,152 416,152 538,152 660,152" fill="none" stroke="#ff4d4f" stroke-width="1.5" stroke-dasharray="8,4"/>
+                </svg>
+                <!-- 图例 -->
+                <div style="display:flex;justify-content:center;gap:20px;margin-top:8px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#4e5464;">
+                        <span style="width:20px;height:3px;background:#1890ff;display:inline-block;"></span>新船价格
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#4e5464;">
+                        <span style="width:20px;height:3px;background:#8c8c8c;display:inline-block;border-top:2px dashed #8c8c8c;height:0;"></span>拆船价格
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#4e5464;">
+                        <span style="width:20px;height:3px;background:#00b87a;display:inline-block;"></span>资产估值
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#4e5464;">
+                        <span style="width:20px;height:3px;background:#fa8c16;display:inline-block;border-top:2px dashed #fa8c16;height:0;"></span>人工估值
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#4e5464;">
+                        <span style="width:20px;height:3px;background:#ff4d4f;display:inline-block;border-top:2px dashed #ff4d4f;height:0;"></span>安全线
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('chartModal')">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openChartModal(name, imo) {
+    document.getElementById('chartModalTitle').textContent = '估值曲线图 - ' + name;
+    document.getElementById('chartTitle').textContent = name + ' (IMO: ' + imo + ')';
+    document.getElementById('chartModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function toggleUserMenu() { document.getElementById('userDropdown').classList.toggle('show'); }
+document.addEventListener('click', function(e) { if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) { document.getElementById('userDropdown').classList.remove('show'); } });
+</script>
+</body>
+</html>

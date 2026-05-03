@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>租户管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem active"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">平台侧运营控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">超</div>
+                    <span>平台超管</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">平台管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">租户管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">租户名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入租户名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">租户编码</span>
+                    <input class="queryInput" type="text" placeholder="请输入租户编码" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>启用</option>
+                        <option>禁用</option>
+                        <option>已到期</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">租户列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 新增租户</button>
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>租户名称</th>
+                                <th>租户编码</th>
+                                <th>管理员账号</th>
+                                <th>状态</th>
+                                <th>到期时间</th>
+                                <th>用户数</th>
+                                <th>创建时间</th>
+                                <th style="width:200px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="linkCell" onclick="openDetailModal('浙商融资租赁')">浙商融资租赁</span></td>
+                                <td>ZSRZL</td>
+                                <td>zsadmin</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2027-12-31</td>
+                                <td>15</td>
+                                <td>2026-01-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('浙商融资租赁')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('浙商融资租赁')">编辑</button>
+                                        <button class="btnLink" onclick="openRenewModal()">续期</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="linkCell" onclick="openDetailModal('华海船舶租赁')">华海船舶租赁</span></td>
+                                <td>HHCBZL</td>
+                                <td>hhadmin</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-12-31</td>
+                                <td>8</td>
+                                <td>2026-02-15</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('华海船舶租赁')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('华海船舶租赁')">编辑</button>
+                                        <button class="btnLink" onclick="openRenewModal()">续期</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="linkCell" onclick="openDetailModal('远洋金融租赁')">远洋金融租赁</span></td>
+                                <td>YYJRZL</td>
+                                <td>yyadmin</td>
+                                <td><span class="tag tagDanger">禁用</span></td>
+                                <td>2026-06-30</td>
+                                <td>3</td>
+                                <td>2026-03-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('远洋金融租赁')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('远洋金融租赁')">编辑</button>
+                                        <button class="btnLink" onclick="confirmEnable()">启用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="linkCell" onclick="openDetailModal('东方航运租赁')">东方航运租赁</span></td>
+                                <td>DFHYZL</td>
+                                <td>dfadmin</td>
+                                <td><span class="tag tagWarning">已到期</span></td>
+                                <td>2026-03-31</td>
+                                <td>5</td>
+                                <td>2025-04-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('东方航运租赁')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('东方航运租赁')">编辑</button>
+                                        <button class="btnLink" onclick="openRenewModal()">续期</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 4 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑租户弹窗 -->
+<div class="modalOverlay" id="tenantModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="tenantModalTitle">新增租户</span>
+            <span class="modalClose" onclick="closeModal('tenantModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">租户名称</div>
+                <div class="field"><input type="text" id="tenantNameInput" placeholder="请输入租户名称" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">租户编码</div>
+                <div class="field"><input type="text" placeholder="如：ZSRZL，全局唯一" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">管理员账号</div>
+                <div class="field"><input type="text" placeholder="初始管理员账号" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">管理员密码</div>
+                <div class="field"><input type="password" placeholder="初始密码，8-128位" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">到期时间</div>
+                <div class="field"><input type="date" value="2027-12-31" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">备注</div>
+                <div class="field"><textarea placeholder="请输入备注信息"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('tenantModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('tenantModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 续期弹窗 -->
+<div class="modalOverlay" id="renewModal" style="display:none;">
+    <div class="modal" style="width:420px;">
+        <div class="modalHeader">
+            <span class="modalTitle">租户续期</span>
+            <span class="modalClose" onclick="closeModal('renewModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:16px;font-size:14px;color:#4e5464;">
+                当前到期时间：<strong>2027-12-31</strong>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">新到期时间</div>
+                <div class="field"><input type="date" value="2028-12-31" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">续期原因</div>
+                <div class="field"><textarea placeholder="请输入续期原因（可选）"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('renewModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('renewModal')">确认续期</button>
+        </div>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modalOverlay" id="detailModal" style="display:none;">
+    <div class="modal" style="width:600px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="detailModalTitle">租户详情</span>
+            <span class="modalClose" onclick="closeModal('detailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="infoGrid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+                <div class="infoItem">
+                    <span class="label">租户名称：</span>
+                    <span class="value" id="detailTenantName">浙商融资租赁</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">租户编码：</span>
+                    <span class="value">ZSRZL</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">状态：</span>
+                    <span class="value"><span class="tag tagSuccess">启用</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">到期时间：</span>
+                    <span class="value">2027-12-31</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">管理员账号：</span>
+                    <span class="value">zsadmin</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">用户数：</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">创建时间：</span>
+                    <span class="value">2026-01-01</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">最近更新：</span>
+                    <span class="value">2026-04-01</span>
+                </div>
+            </div>
+            <div style="border-top:1px solid #ecedf0;padding-top:16px;">
+                <div style="font-size:14px;font-weight:500;color:#26272a;margin-bottom:12px;">管理员操作</div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btnDefault" onclick="confirmResetAdminPwd()">重置管理员密码</button>
+                    <button class="btn btnDefault" onclick="confirmForceLogout()">强制下线管理员</button>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('detailModal')">关闭</button>
+            <button class="btn btnPrimary" onclick="closeModal('detailModal');openEditModal(document.getElementById('detailTenantName').textContent)">编辑</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('tenantModalTitle').textContent = '新增租户';
+    document.getElementById('tenantNameInput').value = '';
+    document.getElementById('tenantModal').style.display = 'flex';
+}
+function openEditModal(name) {
+    document.getElementById('tenantModalTitle').textContent = '编辑租户 - ' + name;
+    document.getElementById('tenantNameInput').value = name;
+    document.getElementById('tenantModal').style.display = 'flex';
+}
+function openRenewModal() { document.getElementById('renewModal').style.display = 'flex'; }
+function openDetailModal(name) {
+    document.getElementById('detailModalTitle').textContent = '租户详情 - ' + name;
+    document.getElementById('detailTenantName').textContent = name;
+    document.getElementById('detailModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmDisable() { if(confirm('确认禁用该租户？禁用后该租户用户将无法登录。')) {} }
+function confirmEnable() { if(confirm('确认启用该租户？')) {} }
+function confirmInvalid() { if(confirm('确认将该租户置为无效？置无效后该租户将从列表中不可见。')) {} }
+function confirmResetAdminPwd() { if(confirm('确认重置该租户管理员密码？')) {} }
+function confirmForceLogout() { if(confirm('确认强制下线该租户管理员的所有会话？')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

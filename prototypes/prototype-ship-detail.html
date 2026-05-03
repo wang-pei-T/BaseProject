@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>船舶详情 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .detailSection {
+            background: #fff;
+            border: 1px solid #ecedf0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        .detailSectionHeader {
+            padding: 12px 16px;
+            border-bottom: 1px solid #ecedf0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #26272a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detailSectionBody { padding: 16px; }
+        .statusTag { font-size: 12px; padding: 2px 8px; border-radius: 2px; }
+        .statusTag.purchasing { background: #e8f4ff; color: #1890ff; }
+        .statusTag.waiting { background: #fff7e6; color: #fa8c16; }
+        .statusTag.leasing { background: #e8f8f2; color: #00b87a; }
+        .statusTag.disposed { background: #f5f5f5; color: #8c8c8c; }
+        .statusTag.recovered { background: #f9f0ff; color: #722ed1; }
+        .statusTag.scrapped { background: #fff1f0; color: #ff4d4f; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'"><span>👤</span>个人设置</div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'"><span>🚪</span>退出登录</div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">船舶业务</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem" onclick="location.href='prototype-ship-manage.html'">船舶管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">船舶详情</span>
+        </div>
+        <div class="content">
+            <!-- 基本信息 -->
+            <div class="detailSection">
+                <div class="detailSectionHeader">
+                    <span>🚢</span> 基本信息
+                </div>
+                <div class="detailSectionBody">
+                    <div class="infoGrid">
+                        <div class="infoItem">
+                            <span class="label">船舶编号：</span>
+                            <span class="value">SH-2026-001</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船舶名称：</span>
+                            <span class="value" style="font-weight:500;">浙商远洋1号</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">英文名称：</span>
+                            <span class="value">ZHESHANG OCEAN NO.1</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船壳号IMO：</span>
+                            <span class="value">9876543</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">MMSI编号：</span>
+                            <span class="value">412345001</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">呼号：</span>
+                            <span class="value">BVZS1</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">确认收到时间：</span>
+                            <span class="value">2026-01-15</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">租赁物状态：</span>
+                            <span class="value"><span class="statusTag leasing">在租</span></span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船舶类型：</span>
+                            <span class="value">散货船</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">所有权人：</span>
+                            <span class="value">浙商融资租赁</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">所属船队：</span>
+                            <span class="value"><span class="tag tagInfo">远洋一队</span></span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船旗国：</span>
+                            <span class="value">中国</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船级社：</span>
+                            <span class="value">中国船级社（CCS）</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">航行区域：</span>
+                            <span class="value">无限航区</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">造船厂：</span>
+                            <span class="value">江南造船（集团）有限责任公司</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">出厂日期：</span>
+                            <span class="value">2020-06-15</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">船龄（年）：</span>
+                            <span class="value">5.8</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">载重吨：</span>
+                            <span class="value">82,000 DWT</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #ecedf0;">
+                        <div class="infoItem" style="display:flex;">
+                            <span class="label">其他事项说明：</span>
+                            <span class="value" style="line-height:1.6;">该船舶于2020年6月交付使用，配备先进的货物装卸系统和自动化导航设备。船舶定期在中国船级社进行年度检验，最近一次检验日期为2025年12月，检验结果合格。</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 价值信息 -->
+            <div class="detailSection">
+                <div class="detailSectionHeader">
+                    <span>💰</span> 价值信息
+                </div>
+                <div class="detailSectionBody">
+                    <div class="infoGrid">
+                        <div class="infoItem">
+                            <span class="label">币种：</span>
+                            <span class="value">美元</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">资产原值：</span>
+                            <span class="value" style="font-weight:500;color:#26272a;font-size:16px;">32,000,000</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">资产净值：</span>
+                            <span class="value" style="font-weight:500;color:#26272a;font-size:16px;">29,500,000</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">资产估值：</span>
+                            <span class="value" style="font-weight:500;color:#008c8c;font-size:16px;">28,500,000</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">可使用期限：</span>
+                            <span class="value">240 个月（20年）</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部操作区 -->
+            <div class="pageActions">
+                <button class="btn btnDefault" onclick="history.back()">返回列表</button>
+                <button class="btn btnPrimary" onclick="openEditModal()">编辑</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modalOverlay" id="editModal" style="display:none;">
+    <div class="modal" style="width:620px;">
+        <div class="modalHeader">
+            <span class="modalTitle">编辑船舶信息 - 浙商远洋1号</span>
+            <span class="modalClose" onclick="closeModal('editModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">船舶名称</div>
+                <div class="field"><input type="text" value="浙商远洋1号" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">英文名称</div>
+                <div class="field"><input type="text" value="ZHESHANG OCEAN NO.1" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">船壳号IMO</div>
+                <div class="field"><input type="text" value="9876543" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">MMSI编号</div>
+                <div class="field"><input type="text" value="412345001" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">呼号</div>
+                <div class="field"><input type="text" value="BVZS1" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">租赁物状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>购置中</option>
+                        <option>待租</option>
+                        <option selected>在租</option>
+                        <option>已处置</option>
+                        <option>已回收</option>
+                        <option>已报废</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">船舶类型</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>杂货船</option>
+                        <option selected>散货船</option>
+                        <option>木材船</option>
+                        <option>冷藏船</option>
+                        <option>滚装船</option>
+                        <option>载驳船</option>
+                        <option>集装箱船</option>
+                        <option>油轮</option>
+                        <option>化学品船</option>
+                        <option>沥青船</option>
+                        <option>工作船舶（拖船）</option>
+                        <option>工作船舶（引航船）</option>
+                        <option>工作船舶（破冰船）</option>
+                        <option>工作船舶（供给船）</option>
+                        <option>工作船舶（科学考察船）</option>
+                        <option>工作船舶（消防船）</option>
+                        <option>其他船舶</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">所有权人</div>
+                <div class="field"><input type="text" value="浙商融资租赁" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">船旗国</div>
+                <div class="field"><input type="text" value="中国" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">船级社</div>
+                <div class="field"><input type="text" value="中国船级社（CCS）" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">航行区域</div>
+                <div class="field"><input type="text" value="无限航区" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">造船厂</div>
+                <div class="field"><input type="text" value="江南造船（集团）有限责任公司" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">出厂日期</div>
+                <div class="field"><input type="date" value="2020-06-15" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">其他说明</div>
+                <div class="field"><textarea>该船舶于2020年6月交付使用，配备先进的货物装卸系统和自动化导航设备。</textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('editModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('editModal')">保存</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEditModal() { document.getElementById('editModal').style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function toggleUserMenu() { document.getElementById('userDropdown').classList.toggle('show'); }
+document.addEventListener('click', function(e) { if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) { document.getElementById('userDropdown').classList.remove('show'); } });
+</script>
+</body>
+</html>

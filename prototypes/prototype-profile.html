@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>个人设置 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .profileLayout { display: flex; gap: 16px; }
+        .profileLeft {
+            width: 200px;
+            flex-shrink: 0;
+            background: #fff;
+            border: 1px solid #ecedf0;
+            border-radius: 4px;
+            padding: 8px 0;
+        }
+        .profileNavItem {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4e5464;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.15s;
+        }
+        .profileNavItem:hover { background: #f5f7fa; color: #008c8c; }
+        .profileNavItem.active { background: #e6f7f7; color: #008c8c; font-weight: 500; border-left-color: #008c8c; }
+        .profileRight { flex: 1; min-width: 0; }
+        .avatarArea {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #ecedf0;
+        }
+        .avatarCircle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #008c8c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .avatarInfo { flex: 1; }
+        .avatarName { font-size: 18px; font-weight: 500; color: #26272a; margin-bottom: 4px; }
+        .avatarRole { font-size: 13px; color: #8a8b8e; }
+        .formSection { margin-bottom: 24px; }
+        .formSectionTitle {
+            font-size: 14px;
+            font-weight: 500;
+            color: #26272a;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ecedf0;
+        }
+        .formRow {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .formRow .label {
+            width: 100px;
+            text-align: right;
+            margin-right: 12px;
+            font-size: 14px;
+            color: #4e5464;
+            flex-shrink: 0;
+        }
+        .formRow .label.required::before { content: '*'; color: #ff4d4f; margin-right: 2px; }
+        .formRow .field { flex: 1; max-width: 320px; }
+        .formRow .field input {
+            width: 100%;
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #26272a;
+            outline: none;
+        }
+        .formRow .field input:focus { border-color: #008c8c; }
+        .formRow .field input[readonly] { background: #f5f7fa; color: #8a8b8e; cursor: not-allowed; }
+        .switchRow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ecedf0;
+        }
+        .switchRow:last-child { border-bottom: none; }
+        .switchInfo { flex: 1; }
+        .switchTitle { font-size: 14px; color: #26272a; }
+        .switchDesc { font-size: 12px; color: #8a8b8e; margin-top: 2px; }
+        .toggle {
+            width: 40px;
+            height: 22px;
+            border-radius: 11px;
+            background: #d9d9d9;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle.on { background: #008c8c; }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle.on::after { left: 20px; }
+        .sessionItem {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #ecedf0;
+            gap: 12px;
+        }
+        .sessionItem:last-child { border-bottom: none; }
+        .sessionIcon { font-size: 24px; flex-shrink: 0; }
+        .sessionInfo { flex: 1; }
+        .sessionDevice { font-size: 14px; color: #26272a; }
+        .sessionMeta { font-size: 12px; color: #8a8b8e; margin-top: 2px; }
+        .sessionCurrent { font-size: 12px; color: #008c8c; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">个人设置</span>
+        </div>
+        <div class="content">
+            <div class="profileLayout">
+                <!-- 左侧导航 -->
+                <div class="profileLeft">
+                    <div class="profileNavItem active" onclick="switchSection(this,'sec-profile')">
+                        <span>👤</span>个人资料
+                    </div>
+                    <div class="profileNavItem" onclick="switchSection(this,'sec-password')">
+                        <span>🔒</span>修改密码
+                    </div>
+                    <div class="profileNavItem" onclick="switchSection(this,'sec-notify')">
+                        <span>🔔</span>通知偏好
+                    </div>
+                    <div class="profileNavItem" onclick="switchSection(this,'sec-session')">
+                        <span>💻</span>登录会话
+                    </div>
+                </div>
+
+                <!-- 右侧内容 -->
+                <div class="profileRight">
+
+                    <!-- 个人资料 -->
+                    <div id="sec-profile" class="card">
+                        <div class="avatarArea">
+                            <div class="avatarCircle">管</div>
+                            <div class="avatarInfo">
+                                <div class="avatarName">张三</div>
+                                <div class="avatarRole">租户管理员 · 总部</div>
+                            </div>
+                            <button class="btn btnDefault">更换头像</button>
+                        </div>
+                        <div class="formSection">
+                            <div class="formSectionTitle">基本信息</div>
+                            <div class="formRow">
+                                <div class="label">账号</div>
+                                <div class="field"><input type="text" value="zhangsan" readonly /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label required">姓名</div>
+                                <div class="field"><input type="text" value="张三" /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label">手机号</div>
+                                <div class="field"><input type="text" value="13800000001" /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label">邮箱</div>
+                                <div class="field"><input type="text" value="zhangsan@example.com" /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label">所属机构</div>
+                                <div class="field"><input type="text" value="总部" readonly /></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:8px;">
+                            <button class="btn btnDefault">取消</button>
+                            <button class="btn btnPrimary">保存修改</button>
+                        </div>
+                    </div>
+
+                    <!-- 修改密码 -->
+                    <div id="sec-password" class="card" style="display:none;">
+                        <div class="formSection">
+                            <div class="formSectionTitle">修改密码</div>
+                            <div class="formRow">
+                                <div class="label required">当前密码</div>
+                                <div class="field"><input type="password" placeholder="请输入当前密码" /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label required">新密码</div>
+                                <div class="field"><input type="password" placeholder="请输入新密码，8-128位" /></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="label required">确认新密码</div>
+                                <div class="field"><input type="password" placeholder="请再次输入新密码" /></div>
+                            </div>
+                        </div>
+                        <div style="background:#e6f7f7;border:1px solid #87e8de;border-radius:4px;padding:10px 12px;font-size:13px;color:#006d75;margin-bottom:16px;">
+                            密码要求：至少 8 位，包含数字和字母。
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:8px;">
+                            <button class="btn btnDefault">取消</button>
+                            <button class="btn btnPrimary">确认修改</button>
+                        </div>
+                    </div>
+
+                    <!-- 通知偏好 -->
+                    <div id="sec-notify" class="card" style="display:none;">
+                        <div class="formSection">
+                            <div class="formSectionTitle">站内信通知</div>
+                            <div class="switchRow">
+                                <div class="switchInfo">
+                                    <div class="switchTitle">安全提醒</div>
+                                    <div class="switchDesc">登录异常、密码到期等安全相关通知</div>
+                                </div>
+                                <div class="toggle on" onclick="toggleSwitch(this)"></div>
+                            </div>
+                            <div class="switchRow">
+                                <div class="switchInfo">
+                                    <div class="switchTitle">管理提醒</div>
+                                    <div class="switchDesc">账号状态变更、角色变更等管理操作通知</div>
+                                </div>
+                                <div class="toggle on" onclick="toggleSwitch(this)"></div>
+                            </div>
+                            <div class="switchRow">
+                                <div class="switchInfo">
+                                    <div class="switchTitle">系统公告</div>
+                                    <div class="switchDesc">系统维护、版本更新等公告通知</div>
+                                </div>
+                                <div class="toggle" onclick="toggleSwitch(this)"></div>
+                            </div>
+                        </div>
+                        <div class="formSection">
+                            <div class="formSectionTitle">邮件通知（扩展）</div>
+                            <div class="switchRow">
+                                <div class="switchInfo">
+                                    <div class="switchTitle">安全提醒邮件</div>
+                                    <div class="switchDesc">将安全提醒同步发送到绑定邮箱</div>
+                                </div>
+                                <div class="toggle" onclick="toggleSwitch(this)"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:8px;">
+                            <button class="btn btnPrimary">保存偏好</button>
+                        </div>
+                    </div>
+
+                    <!-- 登录会话 -->
+                    <div id="sec-session" class="card" style="display:none;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                            <span style="font-size:15px;font-weight:500;color:#26272a;">当前登录会话</span>
+                            <button class="btn btnDanger" onclick="confirmLogoutAll()">下线其他所有会话</button>
+                        </div>
+                        <div>
+                            <div class="sessionItem">
+                                <div class="sessionIcon">💻</div>
+                                <div class="sessionInfo">
+                                    <div class="sessionDevice">Windows · Chrome 124 <span class="sessionCurrent">（当前）</span></div>
+                                    <div class="sessionMeta">IP：192.168.1.*** · 登录时间：2026-04-27 09:12:33 · 最近活跃：刚刚</div>
+                                </div>
+                            </div>
+                            <div class="sessionItem">
+                                <div class="sessionIcon">📱</div>
+                                <div class="sessionInfo">
+                                    <div class="sessionDevice">iPhone · Safari 17</div>
+                                    <div class="sessionMeta">IP：10.0.0.*** · 登录时间：2026-04-26 20:05:11 · 最近活跃：昨天</div>
+                                </div>
+                                <button class="btn btnDanger" style="height:28px;padding:0 10px;font-size:13px;" onclick="confirmLogoutSession()">下线</button>
+                            </div>
+                            <div class="sessionItem">
+                                <div class="sessionIcon">💻</div>
+                                <div class="sessionInfo">
+                                    <div class="sessionDevice">MacOS · Firefox 125</div>
+                                    <div class="sessionMeta">IP：172.16.0.*** · 登录时间：2026-04-25 14:30:00 · 最近活跃：2天前</div>
+                                </div>
+                                <button class="btn btnDanger" style="height:28px;padding:0 10px;font-size:13px;" onclick="confirmLogoutSession()">下线</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchSection(el, secId) {
+    document.querySelectorAll('.profileNavItem').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    ['sec-profile','sec-password','sec-notify','sec-session'].forEach(id => {
+        document.getElementById(id).style.display = id === secId ? 'block' : 'none';
+    });
+}
+function toggleSwitch(el) {
+    el.classList.toggle('on');
+}
+function confirmLogoutAll() { if(confirm('确认下线除当前会话外的所有其他会话？')) {} }
+function confirmLogoutSession() { if(confirm('确认下线该会话？')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

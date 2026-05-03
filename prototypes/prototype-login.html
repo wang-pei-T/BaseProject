@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - 金融租赁管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'PingFangSC-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #008c8c 0%, #005f5f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loginCard {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        .loginLogo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .loginLogoIcon {
+            width: 56px;
+            height: 56px;
+            background: #008c8c;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .loginTitle {
+            font-size: 20px;
+            font-weight: 500;
+            color: #26272a;
+        }
+        .loginSubtitle {
+            font-size: 14px;
+            color: #8a8b8e;
+            margin-top: 4px;
+        }
+        .formRow {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+        .label {
+            font-size: 14px;
+            color: #4e5464;
+            margin-bottom: 6px;
+        }
+        .field input {
+            width: 100%;
+            height: 40px;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #26272a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field input:focus { border-color: #008c8c; }
+        .field input::placeholder { color: #999; }
+        .loginBtn {
+            width: 100%;
+            height: 40px;
+            background: #008c8c;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .loginBtn:hover { background: #00a8a8; }
+        .loginBtn:active { background: #007575; }
+        .loginFooter {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #8a8b8e;
+        }
+        .errorMsg {
+            background: #fff1f0;
+            border: 1px solid #ffccc7;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #ff4d4f;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .errorMsg.show { display: block; }
+    </style>
+</head>
+<body>
+<div class="loginCard">
+    <div class="loginLogo">
+        <div class="loginLogoIcon">⚓</div>
+        <div class="loginTitle">金融租赁管理系统</div>
+        <div class="loginSubtitle">商船租赁业务管理平台</div>
+    </div>
+    <div class="errorMsg" id="errorMsg">账号或密码错误，请重新输入</div>
+    <div class="formRow">
+        <div class="label">账号</div>
+        <div class="field">
+            <input type="text" placeholder="请输入账号" value="admin" />
+        </div>
+    </div>
+    <div class="formRow">
+        <div class="label">密码</div>
+        <div class="field">
+            <input type="password" placeholder="请输入密码" value="12345678" />
+        </div>
+    </div>
+    <button class="loginBtn" onclick="window.location.href='prototype-user-list.html'">登 录</button>
+    <div class="loginFooter">© 2026 金融租赁管理系统 版权所有</div>
+</div>
+</body>
+</html>

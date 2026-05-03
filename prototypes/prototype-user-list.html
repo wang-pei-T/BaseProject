@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'">
+                <span class="menuIcon">👤</span>用户管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'">
+                <span class="menuIcon">🏢</span>机构管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'">
+                <span class="menuIcon">👥</span>机构人员
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'">
+                <span class="menuIcon">🔑</span>角色管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'">
+                <span class="menuIcon">📋</span>菜单管理
+            </div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'">
+                <span class="menuIcon">🏦</span>租户管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'">
+                <span class="menuIcon">📖</span>字典管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'">
+                <span class="menuIcon">⚙️</span>配置中心
+            </div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'">
+                <span class="menuIcon">💬</span>消息中心
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'">
+                <span class="menuIcon">📝</span>审计日志
+            </div>
+        </div>
+    </div>
+
+    <!-- 主区域 -->
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">用户管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">账号</span>
+                    <input class="queryInput" type="text" placeholder="请输入账号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">姓名</span>
+                    <input class="queryInput" type="text" placeholder="请输入姓名" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option value="ENABLED">启用</option>
+                        <option value="DISABLED">禁用</option>
+                        <option value="LOCKED">锁定</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">所属机构</span>
+                    <select class="select">
+                        <option value="">全部机构</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>华南分部</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select" id="validFilter" onchange="filterByValid(this.value)">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary" onclick="doQuery()">查询</button>
+                    <button class="btn btnDefault" onclick="resetQuery()">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">用户列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 新增用户</button>
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>账号</th>
+                                <th>姓名</th>
+                                <th>手机号</th>
+                                <th>邮箱</th>
+                                <th>所属机构</th>
+                                <th>角色</th>
+                                <th>状态</th>
+                                <th>最近登录</th>
+                                <th style="width:160px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">zhangsan</span></td>
+                                <td>张三</td>
+                                <td>138****0001</td>
+                                <td>zhangsan@example.com</td>
+                                <td>总部</td>
+                                <td>租户管理员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-04-27 09:12</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openEditModal()">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">lisi</span></td>
+                                <td>李四</td>
+                                <td>139****0002</td>
+                                <td>lisi@example.com</td>
+                                <td>华东分部</td>
+                                <td>业务员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-04-26 15:30</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openEditModal()">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">wangwu</span></td>
+                                <td>王五</td>
+                                <td>137****0003</td>
+                                <td>wangwu@example.com</td>
+                                <td>华南分部</td>
+                                <td>审计员</td>
+                                <td><span class="tag tagDanger">禁用</span></td>
+                                <td>2026-04-20 11:00</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openEditModal()">编辑</button>
+                                        <button class="btnLink" onclick="confirmEnable()">启用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">zhaoliu</span></td>
+                                <td>赵六</td>
+                                <td>136****0004</td>
+                                <td>zhaoliu@example.com</td>
+                                <td>总部</td>
+                                <td>风控专员</td>
+                                <td><span class="tag tagWarning">锁定</span></td>
+                                <td>2026-04-15 08:45</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openEditModal()">编辑</button>
+                                        <button class="btnLink" onclick="confirmUnlock()">解锁</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">sunqi</span></td>
+                                <td>孙七</td>
+                                <td>135****0005</td>
+                                <td>sunqi@example.com</td>
+                                <td>华东分部</td>
+                                <td>业务员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-04-27 10:05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openEditModal()">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 23 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn">2</button>
+                    <button class="pageBtn">3</button>
+                    <button class="pageBtn">›</button>
+                    <button class="pageBtn">»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modalOverlay" id="userModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="modalTitle">新增用户</span>
+            <span class="modalClose" onclick="closeModal()">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">账号</div>
+                <div class="field"><input type="text" placeholder="请输入账号，3-64位" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">姓名</div>
+                <div class="field"><input type="text" placeholder="请输入姓名" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">手机号</div>
+                <div class="field"><input type="text" placeholder="请输入手机号" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">邮箱</div>
+                <div class="field"><input type="text" placeholder="请输入邮箱" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">所属机构</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="">请选择机构</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>华南分部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">初始密码</div>
+                <div class="field"><input type="password" placeholder="不填则系统自动生成" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="ENABLED">启用</option>
+                        <option value="DISABLED">禁用</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal()">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal()">确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = '新增用户';
+    document.getElementById('userModal').style.display = 'flex';
+}
+function openEditModal() {
+    document.getElementById('modalTitle').textContent = '编辑用户';
+    document.getElementById('userModal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('userModal').style.display = 'none';
+}
+function doQuery() {}
+function resetQuery() { document.getElementById('validFilter').value = '1'; }
+function confirmDisable() { if(confirm('确认禁用该用户？')) {} }
+function confirmEnable() { if(confirm('确认启用该用户？')) {} }
+function confirmUnlock() { if(confirm('确认解锁该用户？')) {} }
+function confirmInvalid() { if(confirm('确认将该用户置为无效？置无效后该用户将从列表中不可见。')) {} }
+function filterByValid(val) {}
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

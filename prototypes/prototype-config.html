@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>配置中心 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .configTabBar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #ecedf0;
+            background: #fff;
+            padding: 0 16px;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #ecedf0;
+            border-bottom: none;
+        }
+        .configTabItem {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4e5464;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        .configTabItem:hover { color: #008c8c; }
+        .configTabItem.active { color: #008c8c; border-bottom-color: #008c8c; font-weight: 500; }
+        .configGroup {
+            background: #fff;
+            border: 1px solid #ecedf0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .configGroupTitle {
+            padding: 12px 16px;
+            background: #fafafa;
+            font-size: 14px;
+            font-weight: 500;
+            color: #26272a;
+            border-bottom: 1px solid #ecedf0;
+        }
+        .configItem {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #ecedf0;
+            gap: 16px;
+        }
+        .configItem:last-child { border-bottom: none; }
+        .configItemInfo { flex: 1; min-width: 0; }
+        .configItemKey { font-size: 14px; color: #26272a; font-weight: 500; }
+        .configItemDesc { font-size: 12px; color: #8a8b8e; margin-top: 2px; }
+        .configItemValue {
+            min-width: 200px;
+            max-width: 300px;
+            font-size: 14px;
+            color: #4e5464;
+            text-align: right;
+        }
+        .configItemActions { display: flex; gap: 8px; flex-shrink: 0; }
+        .configBadge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem active"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">运营管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">配置中心</span>
+        </div>
+        <div class="content">
+            <!-- Tab切换 -->
+            <div style="display:flex;gap:0;margin-bottom:16px;">
+                <div class="configTabItem active" onclick="switchConfigTab(this,'tab-platform')" style="background:#fff;border:1px solid #ecedf0;border-right:none;border-radius:4px 0 0 4px;">平台全局配置</div>
+                <div class="configTabItem" onclick="switchConfigTab(this,'tab-tenant')" style="background:#fff;border:1px solid #ecedf0;border-radius:0 4px 4px 0;">租户覆盖配置</div>
+            </div>
+
+            <!-- 平台全局配置 -->
+            <div id="tab-platform">
+                <!-- 登录策略 -->
+                <div class="configGroup">
+                    <div class="configGroupTitle">登录策略</div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">登录失败锁定次数</div>
+                            <div class="configItemDesc">连续登录失败超过此次数后账号自动锁定</div>
+                        </div>
+                        <span class="configBadge tag tagInfo">强一致</span>
+                        <div class="configItemValue">5 次</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('登录失败锁定次数','5')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">账号锁定时长</div>
+                            <div class="configItemDesc">账号被锁定后自动解锁的等待时间（分钟），0表示需手动解锁</div>
+                        </div>
+                        <span class="configBadge tag tagInfo">强一致</span>
+                        <div class="configItemValue">30 分钟</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('账号锁定时长','30')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">是否开启验证码</div>
+                            <div class="configItemDesc">登录时是否要求输入图形验证码</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">关闭</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('是否开启验证码','关闭')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">Session 超时时长</div>
+                            <div class="configItemDesc">用户无操作后会话自动过期时间（分钟）</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">120 分钟</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('Session 超时时长','120')">编辑</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 密码策略 -->
+                <div class="configGroup">
+                    <div class="configGroupTitle">密码策略</div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">密码最小长度</div>
+                            <div class="configItemDesc">用户密码的最小字符数</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">8 位</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('密码最小长度','8')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">密码复杂度要求</div>
+                            <div class="configItemDesc">密码必须包含的字符类型（大写/小写/数字/特殊字符）</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">数字+字母</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('密码复杂度要求','数字+字母')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">密码有效期</div>
+                            <div class="configItemDesc">密码到期后强制修改，0表示永不过期（天）</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">0（永不过期）</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('密码有效期','0')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">首次登录强制改密</div>
+                            <div class="configItemDesc">新建用户首次登录时是否强制修改密码</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">开启</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('首次登录强制改密','开启')">编辑</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 审计策略 -->
+                <div class="configGroup">
+                    <div class="configGroupTitle">审计策略</div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">审计记录保留天数</div>
+                            <div class="configItemDesc">审计日志的默认保留时长（天），超期后归档</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">180 天</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('审计记录保留天数','180')">编辑</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">安全审计保留天数</div>
+                            <div class="configItemDesc">登录/锁定/权限拒绝等安全类审计的保留时长（天）</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">最终一致</span>
+                        <div class="configItemValue">365 天</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('安全审计保留天数','365')">编辑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 租户覆盖配置 -->
+            <div id="tab-tenant" style="display:none;">
+                <div style="background:#fff7e6;border:1px solid #ffd591;border-radius:4px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#fa8c16;">
+                    以下配置项为租户可覆盖的平台默认值。修改后仅对当前租户生效，不影响其他租户。
+                </div>
+                <div class="configGroup">
+                    <div class="configGroupTitle">可覆盖配置项</div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">登录失败锁定次数</div>
+                            <div class="configItemDesc">平台默认：5 次</div>
+                        </div>
+                        <span class="configBadge tag tagWarning">已覆盖</span>
+                        <div class="configItemValue">3 次</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('登录失败锁定次数','3')">编辑</button>
+                            <button class="btnLinkDanger" onclick="confirmResetConfig()">恢复默认</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">Session 超时时长</div>
+                            <div class="configItemDesc">平台默认：120 分钟</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">使用默认</span>
+                        <div class="configItemValue" style="color:#8a8b8e;">120 分钟（默认）</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('Session 超时时长','120')">覆盖</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">密码最小长度</div>
+                            <div class="configItemDesc">平台默认：8 位</div>
+                        </div>
+                        <span class="configBadge tag tagDefault">使用默认</span>
+                        <div class="configItemValue" style="color:#8a8b8e;">8 位（默认）</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('密码最小长度','8')">覆盖</button>
+                        </div>
+                    </div>
+                    <div class="configItem">
+                        <div class="configItemInfo">
+                            <div class="configItemKey">首次登录强制改密</div>
+                            <div class="configItemDesc">平台默认：开启</div>
+                        </div>
+                        <span class="configBadge tag tagWarning">已覆盖</span>
+                        <div class="configItemValue">关闭</div>
+                        <div class="configItemActions">
+                            <button class="btnLink" onclick="openEditConfigModal('首次登录强制改密','关闭')">编辑</button>
+                            <button class="btnLinkDanger" onclick="confirmResetConfig()">恢复默认</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑配置弹窗 -->
+<div class="modalOverlay" id="editConfigModal" style="display:none;">
+    <div class="modal" style="width:440px;">
+        <div class="modalHeader">
+            <span class="modalTitle">编辑配置项</span>
+            <span class="modalClose" onclick="closeModal('editConfigModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label">配置项</div>
+                <div class="field">
+                    <input type="text" id="configKeyDisplay" readonly style="background:#f5f7fa;color:#8a8b8e;" />
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">配置值</div>
+                <div class="field">
+                    <input type="text" id="configValueInput" />
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">变更原因</div>
+                <div class="field"><textarea placeholder="请输入变更原因（可选，将记录到审计）"></textarea></div>
+            </div>
+            <div style="background:#fff7e6;border:1px solid #ffd591;border-radius:4px;padding:10px 12px;font-size:12px;color:#fa8c16;margin-top:8px;">
+                配置变更将记录到审计日志，强一致配置立即生效，最终一致配置在短时间内生效。
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('editConfigModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('editConfigModal')">保存</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchConfigTab(el, tabId) {
+    document.querySelectorAll('.configTabItem').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-platform').style.display = tabId === 'tab-platform' ? 'block' : 'none';
+    document.getElementById('tab-tenant').style.display = tabId === 'tab-tenant' ? 'block' : 'none';
+}
+function openEditConfigModal(key, val) {
+    document.getElementById('configKeyDisplay').value = key;
+    document.getElementById('configValueInput').value = val;
+    document.getElementById('editConfigModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmResetConfig() { if(confirm('确认恢复为平台默认值？'))  }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

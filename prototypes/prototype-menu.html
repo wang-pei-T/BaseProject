@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .menuTypeTag { font-size: 12px; padding: 2px 6px; border-radius: 2px; display: inline-block; }
+        .menuTypeTag.dir { background: #f5f5f5; color: #8c8c8c; }
+        .menuTypeTag.page { background: #e8f4ff; color: #1890ff; }
+        .menuTypeTag.action { background: #e8f8f2; color: #00b87a; }
+        .menuTypeTag.link { background: #fff7e6; color: #fa8c16; }
+        .treeTable { width: 100%; border-collapse: collapse; }
+        .treeTable th {
+            font-size: 14px; font-weight: 500; color: #26272a; background: #fafafa;
+            padding: 12px 16px; text-align: left; border-bottom: 1px solid #ecedf0; white-space: nowrap;
+        }
+        .treeTable td {
+            font-size: 14px; color: #4e5464; padding: 10px 16px; border-bottom: 1px solid #ecedf0; white-space: nowrap;
+        }
+        .treeTable tr:hover td { background: #f5f7fa; }
+        .treeTable tr:last-child td { border-bottom: none; }
+        .treeName { display: inline-flex; align-items: center; gap: 4px; }
+        .treeIndent { display: inline-block; }
+        .treeToggle { width: 16px; display: inline-block; text-align: center; font-size: 11px; color: #8a8b8e; cursor: pointer; flex-shrink: 0; }
+        .treeIcon { font-size: 14px; margin-right: 4px; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem active"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'"><span>👤</span>个人设置</div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'"><span>🚪</span>退出登录</div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">菜单管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">菜单名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入菜单名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">菜单类型</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>目录</option>
+                        <option>页面</option>
+                        <option>操作点</option>
+                        <option>外链</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 树形表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">菜单树</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 新增菜单</button>
+                        <button class="btn btnDefault" onclick="expandAll()">全部展开</button>
+                        <button class="btn btnDefault" onclick="collapseAll()">全部收起</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table class="treeTable">
+                        <thead>
+                            <tr>
+                                <th style="min-width:280px;">菜单名称</th>
+                                <th>类型</th>
+                                <th>路由路径</th>
+                                <th>权限标识</th>
+                                <th>排序</th>
+                                <th>状态</th>
+                                <th>是否隐藏</th>
+                                <th style="width:180px;text-align:right;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="treeTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modalOverlay" id="detailModal" style="display:none;">
+    <div class="modal" style="width:560px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="detailModalTitle">菜单详情</span>
+            <span class="modalClose" onclick="closeModal('detailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="infoGrid" style="grid-template-columns:repeat(2,1fr);">
+                <div class="infoItem"><span class="label">菜单名称：</span><span class="value" id="dName"></span></div>
+                <div class="infoItem"><span class="label">菜单类型：</span><span class="value" id="dType"></span></div>
+                <div class="infoItem"><span class="label">上级菜单：</span><span class="value" id="dParent"></span></div>
+                <div class="infoItem"><span class="label">路由路径：</span><span class="value" id="dPath"></span></div>
+                <div class="infoItem"><span class="label">权限标识：</span><span class="value" id="dPerm"></span></div>
+                <div class="infoItem"><span class="label">排序：</span><span class="value" id="dSort"></span></div>
+                <div class="infoItem"><span class="label">状态：</span><span class="value"><span class="tag tagSuccess">启用</span></span></div>
+                <div class="infoItem"><span class="label">是否隐藏：</span><span class="value" id="dHidden"></span></div>
+                <div class="infoItem"><span class="label">图标：</span><span class="value" id="dIcon"></span></div>
+                <div class="infoItem"><span class="label">创建时间：</span><span class="value">2026-01-01</span></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('detailModal')">关闭</button>
+            <button class="btn btnPrimary" onclick="closeModal('detailModal');openEditModal(currentDetailIdx)">编辑</button>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modalOverlay" id="menuModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="menuModalTitle">新增菜单</span>
+            <span class="modalClose" onclick="closeModal('menuModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">菜单名称</div>
+                <div class="field"><input type="text" id="menuNameInput" placeholder="请输入菜单名称" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">菜单类型</div>
+                <div class="field">
+                    <select id="menuTypeSelect" style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>目录</option><option>页面</option><option>操作点</option><option>外链</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">上级菜单</div>
+                <div class="field">
+                    <select id="parentSelect" style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="">无（顶级）</option>
+                        <option>船舶业务</option><option>系统管理</option><option>用户管理</option><option>机构管理</option><option>角色管理</option><option>运营管理</option><option>审计日志</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">路由路径</div>
+                <div class="field"><input type="text" placeholder="如：/system/user" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">权限标识</div>
+                <div class="field"><input type="text" placeholder="如：tenant.user.read" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">图标</div>
+                <div class="field"><input type="text" placeholder="图标名称或emoji" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">排序</div>
+                <div class="field"><input type="number" value="1" min="1" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option><option>禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">是否隐藏</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>否</option><option>是</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('menuModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('menuModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var menuTree = [
+  {id:0,name:'船舶业务',type:'目录',cls:'dir',icon:'📁',path:'/ship',perm:'—',sort:1,parent:'—',hidden:'否',children:[
+    {id:1,name:'船舶分组',type:'页面',cls:'page',icon:'📄',path:'/ship/group',perm:'tenant.ship.group.read',sort:1,parent:'船舶业务',hidden:'否',children:[]},
+    {id:2,name:'船舶管理',type:'页面',cls:'page',icon:'📄',path:'/ship/manage',perm:'tenant.ship.read',sort:2,parent:'船舶业务',hidden:'否',children:[]},
+  ]},
+  {id:3,name:'系统管理',type:'目录',cls:'dir',icon:'📁',path:'/system',perm:'—',sort:2,parent:'—',hidden:'否',children:[
+    {id:4,name:'用户管理',type:'页面',cls:'page',icon:'📄',path:'/system/user',perm:'tenant.user.read',sort:1,parent:'系统管理',hidden:'否',children:[
+      {id:5,name:'新增用户',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.user.create',sort:1,parent:'用户管理',hidden:'否',children:[]},
+      {id:6,name:'编辑用户',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.user.update',sort:2,parent:'用户管理',hidden:'否',children:[]},
+      {id:7,name:'禁用用户',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.user.disable',sort:3,parent:'用户管理',hidden:'否',children:[]},
+      {id:8,name:'重置密码',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.user.resetPassword',sort:4,parent:'用户管理',hidden:'否',children:[]},
+      {id:9,name:'置无效',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.user.invalidate',sort:5,parent:'用户管理',hidden:'否',children:[]},
+    ]},
+    {id:10,name:'机构管理',type:'页面',cls:'page',icon:'📄',path:'/system/org',perm:'tenant.org.read',sort:2,parent:'系统管理',hidden:'否',children:[]},
+    {id:11,name:'机构人员',type:'页面',cls:'page',icon:'📄',path:'/system/org-member',perm:'tenant.org.member.read',sort:3,parent:'系统管理',hidden:'否',children:[]},
+    {id:12,name:'角色管理',type:'页面',cls:'page',icon:'📄',path:'/system/role',perm:'tenant.role.read',sort:4,parent:'系统管理',hidden:'否',children:[
+      {id:13,name:'新增角色',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.role.create',sort:1,parent:'角色管理',hidden:'否',children:[]},
+      {id:14,name:'角色授权',type:'操作点',cls:'action',icon:'⚡',path:'—',perm:'tenant.role.authorize',sort:2,parent:'角色管理',hidden:'否',children:[]},
+    ]},
+    {id:15,name:'菜单管理',type:'页面',cls:'page',icon:'📄',path:'/system/menu',perm:'tenant.menu.read',sort:5,parent:'系统管理',hidden:'否',children:[]},
+  ]},
+  {id:16,name:'运营管理',type:'目录',cls:'dir',icon:'📁',path:'/ops',perm:'—',sort:3,parent:'—',hidden:'否',children:[
+    {id:17,name:'租户管理',type:'页面',cls:'page',icon:'📄',path:'/ops/tenant',perm:'platform.tenant.read',sort:1,parent:'运营管理',hidden:'否',children:[]},
+    {id:18,name:'字典管理',type:'页面',cls:'page',icon:'📄',path:'/ops/dict',perm:'tenant.dict.read',sort:2,parent:'运营管理',hidden:'否',children:[]},
+    {id:19,name:'配置中心',type:'页面',cls:'page',icon:'📄',path:'/ops/config',perm:'tenant.config.read',sort:3,parent:'运营管理',hidden:'否',children:[]},
+  ]},
+  {id:20,name:'消息与日志',type:'目录',cls:'dir',icon:'📁',path:'/log',perm:'—',sort:4,parent:'—',hidden:'否',children:[
+    {id:21,name:'消息中心',type:'页面',cls:'page',icon:'📄',path:'/log/message',perm:'tenant.message.read',sort:1,parent:'消息与日志',hidden:'否',children:[]},
+    {id:22,name:'审计日志',type:'页面',cls:'page',icon:'📄',path:'/log/audit',perm:'tenant.audit.read',sort:2,parent:'消息与日志',hidden:'否',children:[]},
+  ]},
+];
+
+var expandedSet = new Set();
+var currentDetailIdx = 0;
+
+// 初始全部展开
+function initExpand(nodes) { nodes.forEach(function(n){ expandedSet.add(n.id); if(n.children) initExpand(n.children); }); }
+initExpand(menuTree);
+
+function renderTree() {
+    var tbody = document.getElementById('treeTableBody');
+    tbody.innerHTML = '';
+    function walk(nodes, depth) {
+        nodes.forEach(function(n) {
+            var hasChild = n.children && n.children.length > 0;
+            var isOpen = expandedSet.has(n.id);
+            var indent = depth * 24;
+            var toggleHtml = hasChild ? '<span class="treeToggle" onclick="toggleExpand(event,'+n.id+')">'+(isOpen?'▼':'▶')+'</span>' : '<span class="treeToggle"></span>';
+            var nameHtml = '<span class="treeName"><span class="treeIndent" style="width:'+indent+'px;"></span>'+toggleHtml+'<span class="treeIcon">'+n.icon+'</span><span class="linkCell" onclick="openDetailModal('+n.id+')">'+n.name+'</span></span>';
+            var typeHtml = '<span class="menuTypeTag '+n.cls+'">'+n.type+'</span>';
+            var pathHtml = n.path === '—' ? '<span style="color:#8a8b8e;">—</span>' : n.path;
+            var permHtml = n.perm === '—' ? '<span style="color:#8a8b8e;">—</span>' : '<span style="font-size:12px;">'+n.perm+'</span>';
+            var actHtml = '<div class="actionButtons"><button class="btnLink" onclick="openDetailModal('+n.id+')">详情</button><button class="btnLink" onclick="openEditModal('+n.id+')">编辑</button>'+(hasChild?'<button class="btnLink" onclick="openAddChildModal(\''+n.name+'\')">新增子级</button>':'')+'<button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button></div>';
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>'+nameHtml+'</td><td>'+typeHtml+'</td><td>'+pathHtml+'</td><td>'+permHtml+'</td><td>'+n.sort+'</td><td><span class="tag tagSuccess">启用</span></td><td>'+n.hidden+'</td><td class="actionColumn">'+actHtml+'</td>';
+            tbody.appendChild(tr);
+            if(hasChild && isOpen) walk(n.children, depth+1);
+        });
+    }
+    walk(menuTree, 0);
+}
+
+function findNode(nodes, id) {
+    for(var i=0;i<nodes.length;i++){
+        if(nodes[i].id===id) return nodes[i];
+        if(nodes[i].children){ var r=findNode(nodes[i].children,id); if(r) return r; }
+    }
+    return null;
+}
+
+function toggleExpand(e, id) {
+    e.stopPropagation();
+    if(expandedSet.has(id)) expandedSet.delete(id); else expandedSet.add(id);
+    renderTree();
+}
+function expandAll() {
+    function walk(nodes){ nodes.forEach(function(n){ expandedSet.add(n.id); if(n.children) walk(n.children); }); }
+    walk(menuTree); renderTree();
+}
+function collapseAll() { expandedSet.clear(); renderTree(); }
+
+function openDetailModal(id) {
+    var n = findNode(menuTree, id); if(!n) return;
+    currentDetailIdx = id;
+    document.getElementById('detailModalTitle').textContent = '菜单详情 - ' + n.name;
+    document.getElementById('dName').textContent = n.name;
+    document.getElementById('dType').innerHTML = '<span class="menuTypeTag '+n.cls+'">'+n.type+'</span>';
+    document.getElementById('dParent').textContent = n.parent;
+    document.getElementById('dPath').textContent = n.path;
+    document.getElementById('dPerm').textContent = n.perm;
+    document.getElementById('dSort').textContent = n.sort;
+    document.getElementById('dHidden').textContent = n.hidden;
+    document.getElementById('dIcon').textContent = n.icon;
+    document.getElementById('detailModal').style.display = 'flex';
+}
+function openAddModal() {
+    document.getElementById('menuModalTitle').textContent = '新增菜单';
+    document.getElementById('menuNameInput').value = '';
+    document.getElementById('menuModal').style.display = 'flex';
+}
+function openAddChildModal(parentName) {
+    document.getElementById('menuModalTitle').textContent = '新增子菜单 - ' + parentName;
+    document.getElementById('menuNameInput').value = '';
+    document.getElementById('menuModal').style.display = 'flex';
+}
+function openEditModal(id) {
+    var n = findNode(menuTree, id); if(!n) return;
+    document.getElementById('menuModalTitle').textContent = '编辑菜单 - ' + n.name;
+    document.getElementById('menuNameInput').value = n.name;
+    document.getElementById('menuModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmInvalid() { if(confirm('确认将该菜单置为无效？置无效后该菜单将从菜单树中不可见。')) {} }
+function toggleUserMenu() { document.getElementById('userDropdown').classList.toggle('show'); }
+document.addEventListener('click', function(e) { if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) { document.getElementById('userDropdown').classList.remove('show'); } });
+
+renderTree();
+</script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>审计日志 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'">
+                <span class="menuIcon">👤</span>用户管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'">
+                <span class="menuIcon">🏢</span>机构管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'">
+                <span class="menuIcon">👥</span>机构人员
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'">
+                <span class="menuIcon">🔑</span>角色管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem active"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">审计日志</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">审计日志</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">操作人</span>
+                    <input class="queryInput" type="text" placeholder="请输入操作人账号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">操作类型</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>USER_CREATE</option>
+                        <option>USER_UPDATE</option>
+                        <option>USER_ENABLE</option>
+                        <option>USER_DISABLE</option>
+                        <option>USER_DELETE</option>
+                        <option>ROLE_CREATE</option>
+                        <option>ROLE_UPDATE</option>
+                        <option>LOGIN_SUCCESS</option>
+                        <option>LOGIN_FAILURE</option>
+                        <option>LOGOUT</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">对象类型</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>用户</option>
+                        <option>机构</option>
+                        <option>角色</option>
+                        <option>权限</option>
+                        <option>菜单</option>
+                        <option>配置</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">开始时间</span>
+                    <input class="queryInput" type="date" value="2026-04-01" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">结束时间</span>
+                    <input class="queryInput" type="date" value="2026-04-27" />
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">审计日志列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>操作类型</th>
+                                <th>操作人</th>
+                                <th>对象类型</th>
+                                <th>对象名称</th>
+                                <th>IP地址</th>
+                                <th>操作结果</th>
+                                <th>操作时间</th>
+                                <th style="width:80px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="tag tagInfo">USER_CREATE</span></td>
+                                <td>zhangsan</td>
+                                <td>用户</td>
+                                <td>sunqi</td>
+                                <td>192.168.1.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-27 10:05:33</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(1)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="tag tagInfo">LOGIN_SUCCESS</span></td>
+                                <td>zhangsan</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>192.168.1.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-27 09:12:33</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(2)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="tag tagWarning">USER_DISABLE</span></td>
+                                <td>zhangsan</td>
+                                <td>用户</td>
+                                <td>wangwu</td>
+                                <td>192.168.1.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-26 16:20:11</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(3)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="tag tagDanger">LOGIN_FAILURE</span></td>
+                                <td>zhaoliu</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>10.0.0.***</td>
+                                <td><span class="tag tagDanger">失败</span></td>
+                                <td>2026-04-26 14:05:02</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(4)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="tag tagInfo">ROLE_UPDATE</span></td>
+                                <td>zhangsan</td>
+                                <td>角色</td>
+                                <td>业务员</td>
+                                <td>192.168.1.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-25 11:30:45</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(5)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><span class="tag tagInfo">USER_UPDATE</span></td>
+                                <td>zhangsan</td>
+                                <td>用户</td>
+                                <td>lisi</td>
+                                <td>192.168.1.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-24 09:15:22</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(6)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><span class="tag tagDefault">LOGOUT</span></td>
+                                <td>lisi</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>172.16.0.***</td>
+                                <td><span class="tag tagSuccess">成功</span></td>
+                                <td>2026-04-23 18:00:05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal(7)">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 156 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn">2</button>
+                    <button class="pageBtn">3</button>
+                    <button class="pageBtn">›</button>
+                    <button class="pageBtn">»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 审计详情弹窗 -->
+<div class="modalOverlay" id="auditDetailModal" style="display:none;">
+    <div class="modal" style="width:620px;">
+        <div class="modalHeader">
+            <span class="modalTitle">审计详情</span>
+            <span class="modalClose" onclick="closeModal('auditDetailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="infoGrid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+                <div class="infoItem">
+                    <span class="label">操作类型：</span>
+                    <span class="value"><span class="tag tagInfo" id="auditType">USER_CREATE</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">操作结果：</span>
+                    <span class="value"><span class="tag tagSuccess">成功</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">操作人：</span>
+                    <span class="value">zhangsan</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">主体类型：</span>
+                    <span class="value">租户用户</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">对象类型：</span>
+                    <span class="value">用户</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">对象名称：</span>
+                    <span class="value">sunqi</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">IP地址：</span>
+                    <span class="value">192.168.1.***</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">操作时间：</span>
+                    <span class="value">2026-04-27 10:05:33</span>
+                </div>
+                <div class="infoItem" style="grid-column:span 2;">
+                    <span class="label">请求ID：</span>
+                    <span class="value" style="font-size:12px;color:#8a8b8e;word-break:break-all;">req_20260427_a1b2c3d4e5f6</span>
+                </div>
+                <div class="infoItem" style="grid-column:span 2;">
+                    <span class="label">User-Agent：</span>
+                    <span class="value" style="font-size:12px;color:#8a8b8e;">Mozilla/5.0 (Windows NT 10.0; Win64; x64)...</span>
+                </div>
+            </div>
+            <div style="border-top:1px solid #ecedf0;padding-top:16px;">
+                <div style="font-size:14px;font-weight:500;color:#26272a;margin-bottom:12px;">变更详情</div>
+                <div style="background:#fafafa;border:1px solid #ecedf0;border-radius:4px;padding:12px;font-size:13px;color:#4e5464;line-height:1.8;">
+                    <div style="display:grid;grid-template-columns:120px 1fr 1fr;gap:8px;">
+                        <div style="font-weight:500;color:#26272a;">字段</div>
+                        <div style="font-weight:500;color:#26272a;">变更前</div>
+                        <div style="font-weight:500;color:#26272a;">变更后</div>
+                        <div>username</div><div style="color:#8a8b8e;">—</div><div>sunqi</div>
+                        <div>displayName</div><div style="color:#8a8b8e;">—</div><div>孙七</div>
+                        <div>status</div><div style="color:#8a8b8e;">—</div><div>ENABLED</div>
+                        <div>orgId</div><div style="color:#8a8b8e;">—</div><div>华东分部</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('auditDetailModal')">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDetailModal(id) {
+    document.getElementById('auditDetailModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

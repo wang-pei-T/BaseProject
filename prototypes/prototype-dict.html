@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>字典管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .dictLayout { display: flex; gap: 16px; }
+        .dictLeft {
+            width: 300px;
+            flex-shrink: 0;
+        }
+        .dictRight { flex: 1; min-width: 0; }
+        .dictTypeItem {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #4e5464;
+            border-bottom: 1px solid #ecedf0;
+            transition: background 0.15s;
+        }
+        .dictTypeItem:hover { background: #f5f7fa; color: #008c8c; }
+        .dictTypeItem.active { background: #e6f7f7; color: #008c8c; font-weight: 500; }
+        .dictTypeItem:last-child { border-bottom: none; }
+        .dictTypeCode { font-size: 12px; color: #8a8b8e; margin-top: 2px; }
+        .dictTypeItem.active .dictTypeCode { color: #00a8a8; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem active"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">运营管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">字典管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea" style="margin-bottom:16px;">
+                <div class="queryItem">
+                    <span class="queryLabel">字典类型</span>
+                    <input class="queryInput" type="text" placeholder="请输入类型名称或编码" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+            <div class="dictLayout">
+                <!-- 左侧字典类型 -->
+                <div class="dictLeft">
+                    <div class="tableBox">
+                        <div class="tableHeader">
+                            <div class="tableTitle">字典类型</div>
+                            <div class="tableActions">
+                                <button class="btn btnPrimary" style="height:28px;padding:0 10px;font-size:13px;" onclick="openTypeModal()">+ 新增</button>
+                            </div>
+                        </div>
+                        <div style="padding:8px 0;">
+                            <div class="dictTypeItem active" onclick="selectType(this,'用户状态','USER_STATUS')">
+                                <div>
+                                    <div>用户状态</div>
+                                    <div class="dictTypeCode">USER_STATUS</div>
+                                </div>
+                                <span class="tag tagSuccess" style="font-size:11px;">启用</span>
+                            </div>
+                            <div class="dictTypeItem" onclick="selectType(this,'性别','GENDER')">
+                                <div>
+                                    <div>性别</div>
+                                    <div class="dictTypeCode">GENDER</div>
+                                </div>
+                                <span class="tag tagSuccess" style="font-size:11px;">启用</span>
+                            </div>
+                            <div class="dictTypeItem" onclick="selectType(this,'租赁类型','LEASE_TYPE')">
+                                <div>
+                                    <div>租赁类型</div>
+                                    <div class="dictTypeCode">LEASE_TYPE</div>
+                                </div>
+                                <span class="tag tagSuccess" style="font-size:11px;">启用</span>
+                            </div>
+                            <div class="dictTypeItem" onclick="selectType(this,'船舶类型','SHIP_TYPE')">
+                                <div>
+                                    <div>船舶类型</div>
+                                    <div class="dictTypeCode">SHIP_TYPE</div>
+                                </div>
+                                <span class="tag tagSuccess" style="font-size:11px;">启用</span>
+                            </div>
+                            <div class="dictTypeItem" onclick="selectType(this,'合同状态','CONTRACT_STATUS')">
+                                <div>
+                                    <div>合同状态</div>
+                                    <div class="dictTypeCode">CONTRACT_STATUS</div>
+                                </div>
+                                <span class="tag tagDanger" style="font-size:11px;">禁用</span>
+                            </div>
+                            <div class="dictTypeItem" onclick="selectType(this,'优先级','PRIORITY')">
+                                <div>
+                                    <div>优先级</div>
+                                    <div class="dictTypeCode">PRIORITY</div>
+                                </div>
+                                <span class="tag tagSuccess" style="font-size:11px;">启用</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧字典项 -->
+                <div class="dictRight">
+                    <div class="tableBox">
+                        <div class="tableHeader">
+                            <div class="tableTitle">
+                                字典项 - <span id="currentTypeName" style="color:#008c8c;">用户状态</span>
+                                <span style="font-size:12px;color:#8a8b8e;margin-left:8px;" id="currentTypeCode">USER_STATUS</span>
+                            </div>
+                            <div class="tableActions">
+                                <button class="btn btnDefault" onclick="openTypeEditModal()">编辑类型</button>
+                                <button class="btn btnPrimary" onclick="openItemModal()">+ 新增字典项</button>
+                            </div>
+                        </div>
+                        <div class="tableWrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px;">排序</th>
+                                        <th>字典值</th>
+                                        <th>显示名称</th>
+                                        <th>扩展字段</th>
+                                        <th>状态</th>
+                                        <th style="width:140px;" class="actionColumn">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dictItemTable">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>ENABLED</td>
+                                        <td>启用</td>
+                                        <td style="color:#8a8b8e;">—</td>
+                                        <td><span class="tag tagSuccess">启用</span></td>
+                                        <td class="actionColumn">
+                                            <div class="actionButtons">
+                                                <button class="btnLink" onclick="openItemEditModal('ENABLED','启用')">编辑</button>
+                                                <button class="btnLink">↑</button>
+                                                <button class="btnLink">↓</button>
+                                                <button class="btnLinkDanger" onclick="confirmInvalidItem()">置无效</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>DISABLED</td>
+                                        <td>禁用</td>
+                                        <td style="color:#8a8b8e;">—</td>
+                                        <td><span class="tag tagSuccess">启用</span></td>
+                                        <td class="actionColumn">
+                                            <div class="actionButtons">
+                                                <button class="btnLink" onclick="openItemEditModal('DISABLED','禁用')">编辑</button>
+                                                <button class="btnLink">↑</button>
+                                                <button class="btnLink">↓</button>
+                                                <button class="btnLinkDanger" onclick="confirmInvalidItem()">置无效</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>LOCKED</td>
+                                        <td>锁定</td>
+                                        <td style="color:#8a8b8e;">—</td>
+                                        <td><span class="tag tagSuccess">启用</span></td>
+                                        <td class="actionColumn">
+                                            <div class="actionButtons">
+                                                <button class="btnLink" onclick="openItemEditModal('LOCKED','锁定')">编辑</button>
+                                                <button class="btnLink">↑</button>
+                                                <button class="btnLink">↓</button>
+                                                <button class="btnLinkDanger" onclick="confirmInvalidItem()">置无效</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑字典类型弹窗 -->
+<div class="modalOverlay" id="typeModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="typeModalTitle">新增字典类型</span>
+            <span class="modalClose" onclick="closeModal('typeModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">类型名称</div>
+                <div class="field"><input type="text" id="typeNameInput" placeholder="如：用户状态" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">类型编码</div>
+                <div class="field"><input type="text" placeholder="如：USER_STATUS，全局唯一" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">描述</div>
+                <div class="field"><textarea placeholder="请输入描述"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('typeModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('typeModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑字典项弹窗 -->
+<div class="modalOverlay" id="itemModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="itemModalTitle">新增字典项</span>
+            <span class="modalClose" onclick="closeModal('itemModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">字典值</div>
+                <div class="field"><input type="text" id="itemValueInput" placeholder="如：ENABLED" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">显示名称</div>
+                <div class="field"><input type="text" id="itemLabelInput" placeholder="如：启用" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">排序</div>
+                <div class="field"><input type="number" value="1" min="1" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">扩展字段</div>
+                <div class="field"><input type="text" placeholder="可选，JSON格式" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('itemModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('itemModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const mockItems = {
+    'USER_STATUS': [['ENABLED','启用'],['DISABLED','禁用'],['LOCKED','锁定']],
+    'GENDER': [['MALE','男'],['FEMALE','女'],['UNKNOWN','未知']],
+    'LEASE_TYPE': [['FINANCE','融资租赁'],['OPERATE','经营租赁']],
+    'SHIP_TYPE': [['BULK','散货船'],['CONTAINER','集装箱船'],['TANKER','油轮'],['GENERAL','杂货船']],
+    'CONTRACT_STATUS': [['DRAFT','草稿'],['ACTIVE','生效'],['EXPIRED','到期'],['TERMINATED','终止']],
+    'PRIORITY': [['HIGH','高'],['MEDIUM','中'],['LOW','低']],
+};
+
+function selectType(el, name, code) {
+    document.querySelectorAll('.dictTypeItem').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('currentTypeName').textContent = name;
+    document.getElementById('currentTypeCode').textContent = code;
+    const items = mockItems[code] || [];
+    const tbody = document.getElementById('dictItemTable');
+    tbody.innerHTML = items.map((item, i) => `
+        <tr>
+            <td>${i+1}</td>
+            <td>${item[0]}</td>
+            <td>${item[1]}</td>
+            <td style="color:#8a8b8e;">—</td>
+            <td><span class="tag tagSuccess">启用</span></td>
+            <td class="actionColumn">
+                <div class="actionButtons">
+                    <button class="btnLink" onclick="openItemEditModal('${item[0]}','${item[1]}')">编辑</button>
+                    <button class="btnLink">↑</button>
+                    <button class="btnLink">↓</button>
+                    <button class="btnLinkDanger" onclick="confirmInvalidItem()">置无效</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+function openTypeModal() {
+    document.getElementById('typeModalTitle').textContent = '新增字典类型';
+    document.getElementById('typeNameInput').value = '';
+    document.getElementById('typeModal').style.display = 'flex';
+}
+function openTypeEditModal() {
+    document.getElementById('typeModalTitle').textContent = '编辑字典类型';
+    document.getElementById('typeNameInput').value = document.getElementById('currentTypeName').textContent;
+    document.getElementById('typeModal').style.display = 'flex';
+}
+function openItemModal() {
+    document.getElementById('itemModalTitle').textContent = '新增字典项';
+    document.getElementById('itemValueInput').value = '';
+    document.getElementById('itemLabelInput').value = '';
+    document.getElementById('itemModal').style.display = 'flex';
+}
+function openItemEditModal(val, label) {
+    document.getElementById('itemModalTitle').textContent = '编辑字典项';
+    document.getElementById('itemValueInput').value = val;
+    document.getElementById('itemLabelInput').value = label;
+    document.getElementById('itemModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmInvalidItem() { if(confirm('确认将该字典项置为无效？置无效后该字典项将从列表中不可见。')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户详情 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem active" onclick="location.href='prototype-user-list.html'">
+                <span class="menuIcon">👤</span>用户管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'">
+                <span class="menuIcon">🏢</span>机构管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'">
+                <span class="menuIcon">👥</span>机构人员
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'">
+                <span class="menuIcon">🔑</span>角色管理
+            </div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <!-- 主区域 -->
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-user-list.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem" onclick="location.href='prototype-user-list.html'">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem" onclick="location.href='prototype-user-list.html'">用户管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">用户详情</span>
+        </div>
+        <div class="content">
+            <!-- Tab 页签 -->
+            <div class="tabContainer">
+                <div class="tabHeader">
+                    <div class="tabItem active" onclick="switchTab(this,'tab-basic')">基本信息</div>
+                    <div class="tabItem" onclick="switchTab(this,'tab-archive')">档案资料</div>
+                    <div class="tabItem" onclick="switchTab(this,'tab-operation')">运营信息</div>
+                    <div class="tabItem" onclick="switchTab(this,'tab-finance')">财务信息</div>
+                    <div class="tabItem" onclick="switchTab(this,'tab-other')">其他信息</div>
+                </div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div id="tab-basic" class="tabContent active">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <span style="font-size:15px;font-weight:500;color:#26272a;">基本信息</span>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btnDefault" onclick="openResetPwdModal()">重置密码</button>
+                            <button class="btn btnDefault" onclick="openAssignRoleModal()">分配角色</button>
+                            <button class="btn btnPrimary" onclick="openEditModal()">编辑</button>
+                        </div>
+                    </div>
+                    <div class="infoGrid">
+                        <div class="infoItem">
+                            <span class="label">账号：</span>
+                            <span class="value">zhangsan</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">姓名：</span>
+                            <span class="value">张三</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">状态：</span>
+                            <span class="value"><span class="tag tagSuccess">启用</span></span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">手机号：</span>
+                            <span class="value">138****0001</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">邮箱：</span>
+                            <span class="value">zhangsan@example.com</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">所属机构：</span>
+                            <span class="value">总部</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">用户ID：</span>
+                            <span class="value" style="color:#8a8b8e;font-size:12px;">usr_20260101_0001</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">创建时间：</span>
+                            <span class="value">2026-01-01 09:00:00</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">最近登录：</span>
+                            <span class="value">2026-04-27 09:12:33</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">锁定状态：</span>
+                            <span class="value"><span class="tag tagSuccess">正常</span></span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">登录失败次数：</span>
+                            <span class="value">0</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">强制改密：</span>
+                            <span class="value">否</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 角色列表 -->
+                <div class="tableBox">
+                    <div class="tableHeader">
+                        <div class="tableTitle">已分配角色</div>
+                        <div class="tableActions">
+                            <button class="btn btnPrimary" onclick="openAssignRoleModal()">+ 分配角色</button>
+                        </div>
+                    </div>
+                    <div class="tableWrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>角色名称</th>
+                                    <th>角色编码</th>
+                                    <th>角色类型</th>
+                                    <th>状态</th>
+                                    <th>分配时间</th>
+                                    <th style="width:100px;" class="actionColumn">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>租户管理员</td>
+                                    <td>TENANT_ADMIN</td>
+                                    <td><span class="tag tagInfo">内置</span></td>
+                                    <td><span class="tag tagSuccess">启用</span></td>
+                                    <td>2026-01-01 09:00</td>
+                                    <td class="actionColumn">
+                                        <div class="actionButtons">
+                                            <button class="btnLinkDanger">移除</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 档案资料 -->
+            <div id="tab-archive" class="tabContent">
+                <div class="card">
+                    <div style="margin-bottom:16px;font-size:15px;font-weight:500;color:#26272a;">档案资料</div>
+                    <div style="text-align:center;padding:40px;color:#8a8b8e;">暂无档案资料</div>
+                </div>
+            </div>
+
+            <!-- 运营信息 -->
+            <div id="tab-operation" class="tabContent">
+                <div class="card">
+                    <div style="margin-bottom:16px;font-size:15px;font-weight:500;color:#26272a;">运营信息</div>
+                    <div class="infoGrid">
+                        <div class="infoItem">
+                            <span class="label">登录次数：</span>
+                            <span class="value">128</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">最近IP：</span>
+                            <span class="value">192.168.1.***</span>
+                        </div>
+                        <div class="infoItem">
+                            <span class="label">注册来源：</span>
+                            <span class="value">管理员创建</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 财务信息 -->
+            <div id="tab-finance" class="tabContent">
+                <div class="card">
+                    <div style="margin-bottom:16px;font-size:15px;font-weight:500;color:#26272a;">财务信息</div>
+                    <div style="text-align:center;padding:40px;color:#8a8b8e;">暂无财务信息</div>
+                </div>
+            </div>
+
+            <!-- 其他信息 -->
+            <div id="tab-other" class="tabContent">
+                <div class="card">
+                    <div style="margin-bottom:16px;font-size:15px;font-weight:500;color:#26272a;">其他信息</div>
+                    <div style="text-align:center;padding:40px;color:#8a8b8e;">暂无其他信息</div>
+                </div>
+            </div>
+
+            <!-- 底部操作区 -->
+            <div class="pageActions">
+                <button class="btn btnDefault" onclick="location.href='prototype-user-list.html'">返回列表</button>
+                <button class="btn btnDanger" onclick="confirmInvalid()">置无效</button>
+                <button class="btn btnPrimary" onclick="openEditModal()">编辑</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modalOverlay" id="editModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle">编辑用户</span>
+            <span class="modalClose" onclick="closeModal('editModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">姓名</div>
+                <div class="field"><input type="text" value="张三" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">手机号</div>
+                <div class="field"><input type="text" value="13800000001" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">邮箱</div>
+                <div class="field"><input type="text" value="zhangsan@example.com" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">所属机构</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option selected>总部</option>
+                        <option>华东分部</option>
+                        <option>华南分部</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('editModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('editModal')">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 重置密码弹窗 -->
+<div class="modalOverlay" id="resetPwdModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle">重置密码</span>
+            <span class="modalClose" onclick="closeModal('resetPwdModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="color:#4e5464;margin-bottom:16px;">确认重置用户 <strong>张三（zhangsan）</strong> 的密码？</div>
+            <div class="formModalRow">
+                <div class="label">新密码</div>
+                <div class="field"><input type="password" placeholder="不填则系统自动生成" /></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('resetPwdModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('resetPwdModal')">确认重置</button>
+        </div>
+    </div>
+</div>
+
+<!-- 分配角色弹窗 -->
+<div class="modalOverlay" id="assignRoleModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle">分配角色</span>
+            <span class="modalClose" onclick="closeModal('assignRoleModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:12px;">
+                <input class="queryInput" style="width:100%;" type="text" placeholder="搜索角色名称" />
+            </div>
+            <div style="border:1px solid #ecedf0;border-radius:4px;overflow:hidden;">
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ecedf0;background:#fafafa;">
+                    <input type="checkbox" checked /> <span style="font-size:14px;color:#26272a;">租户管理员</span>
+                    <span class="tag tagInfo" style="margin-left:auto;">内置</span>
+                </div>
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ecedf0;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">业务员</span>
+                </div>
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ecedf0;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">审计员</span>
+                </div>
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">风控专员</span>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('assignRoleModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('assignRoleModal')">确认</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchTab(el, tabId) {
+    document.querySelectorAll('.tabItem').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabContent').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+function openEditModal() { document.getElementById('editModal').style.display = 'flex'; }
+function openResetPwdModal() { document.getElementById('resetPwdModal').style.display = 'flex'; }
+function openAssignRoleModal() { document.getElementById('assignRoleModal').style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmInvalid() { if(confirm('确认将该用户置为无效？置无效后该用户将从列表中不可见。')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>机构人员 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem active"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">机构人员</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">所属机构</span>
+                    <select class="select" id="orgFilter">
+                        <option value="">全部机构</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>上海办事处</option>
+                        <option>南京办事处</option>
+                        <option>华南分部</option>
+                        <option>广州办事处</option>
+                        <option>华北分部</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">姓名</span>
+                    <input class="queryInput" type="text" placeholder="请输入姓名" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">账号</span>
+                    <input class="queryInput" type="text" placeholder="请输入账号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">用户状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>启用</option>
+                        <option>禁用</option>
+                        <option>锁定</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">机构人员列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 添加人员到机构</button>
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>账号</th>
+                                <th>姓名</th>
+                                <th>手机号</th>
+                                <th>所属机构</th>
+                                <th>角色</th>
+                                <th>用户状态</th>
+                                <th>加入时间</th>
+                                <th style="width:160px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">zhangsan</span></td>
+                                <td>张三</td>
+                                <td>138****0001</td>
+                                <td>总部</td>
+                                <td>租户管理员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-01-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('张三','总部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('张三','总部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">admin</span></td>
+                                <td>系统管理员</td>
+                                <td>139****0099</td>
+                                <td>总部</td>
+                                <td>租户管理员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-01-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('系统管理员','总部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('系统管理员','总部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">zhaoliu</span></td>
+                                <td>赵六</td>
+                                <td>136****0004</td>
+                                <td>总部</td>
+                                <td>风控专员</td>
+                                <td><span class="tag tagWarning">锁定</span></td>
+                                <td>2026-02-10</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('赵六','总部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('赵六','总部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">lisi</span></td>
+                                <td>李四</td>
+                                <td>139****0002</td>
+                                <td>华东分部</td>
+                                <td>业务员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-01-15</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('李四','华东分部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('李四','华东分部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">sunqi</span></td>
+                                <td>孙七</td>
+                                <td>135****0005</td>
+                                <td>华东分部</td>
+                                <td>业务员</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2026-04-27</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('孙七','华东分部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('孙七','华东分部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-user-detail.html'">wangwu</span></td>
+                                <td>王五</td>
+                                <td>137****0003</td>
+                                <td>华南分部</td>
+                                <td>审计员</td>
+                                <td><span class="tag tagDanger">禁用</span></td>
+                                <td>2026-01-20</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="location.href='prototype-user-detail.html'">详情</button>
+                                        <button class="btnLink" onclick="openMoveModal('王五','华南分部')">调动</button>
+                                        <button class="btnLinkDanger" onclick="confirmRemove('王五','华南分部')">移出机构</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 14 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn">2</button>
+                    <button class="pageBtn">›</button>
+                    <button class="pageBtn">»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加人员到机构弹窗 -->
+<div class="modalOverlay" id="addModal" style="display:none;">
+    <div class="modal" style="width:560px;">
+        <div class="modalHeader">
+            <span class="modalTitle">添加人员到机构</span>
+            <span class="modalClose" onclick="closeModal('addModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">目标机构</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="">请选择机构</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>上海办事处</option>
+                        <option>南京办事处</option>
+                        <option>华南分部</option>
+                        <option>广州办事处</option>
+                        <option>华北分部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">选择人员</div>
+                <div class="field">
+                    <input type="text" placeholder="搜索账号或姓名" style="margin-bottom:8px;" />
+                </div>
+            </div>
+            <div style="margin-left:92px;border:1px solid #ecedf0;border-radius:4px;max-height:200px;overflow-y:auto;">
+                <div style="padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ecedf0;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">周八（zhouba）</span>
+                    <span style="font-size:12px;color:#8a8b8e;margin-left:auto;">未分配机构</span>
+                </div>
+                <div style="padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ecedf0;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">吴九（wujiu）</span>
+                    <span style="font-size:12px;color:#8a8b8e;margin-left:auto;">未分配机构</span>
+                </div>
+                <div style="padding:8px 12px;display:flex;align-items:center;gap:8px;">
+                    <input type="checkbox" /> <span style="font-size:14px;color:#26272a;">郑十（zhengshi）</span>
+                    <span style="font-size:12px;color:#8a8b8e;margin-left:auto;">未分配机构</span>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('addModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('addModal')">确认添加</button>
+        </div>
+    </div>
+</div>
+
+<!-- 调动人员弹窗 -->
+<div class="modalOverlay" id="moveModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="moveModalTitle">调动人员</span>
+            <span class="modalClose" onclick="closeModal('moveModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:16px;font-size:14px;color:#4e5464;">
+                将 <strong id="moveUserName">张三</strong> 从 <strong id="moveFromOrg">总部</strong> 调动至：
+            </div>
+            <div class="formModalRow">
+                <div class="label required">目标机构</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="">请选择目标机构</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>上海办事处</option>
+                        <option>南京办事处</option>
+                        <option>华南分部</option>
+                        <option>广州办事处</option>
+                        <option>华北分部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">调动原因</div>
+                <div class="field"><textarea placeholder="请输入调动原因（可选，将记录到审计）"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('moveModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('moveModal')">确认调动</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
+function openMoveModal(name, fromOrg) {
+    document.getElementById('moveModalTitle').textContent = '调动人员 - ' + name;
+    document.getElementById('moveUserName').textContent = name;
+    document.getElementById('moveFromOrg').textContent = fromOrg;
+    document.getElementById('moveModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmRemove(name, org) {
+    if(confirm('确认将 ' + name + ' 从 ' + org + ' 移出？移出后该用户将不再归属任何机构。')) {}
+}
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>

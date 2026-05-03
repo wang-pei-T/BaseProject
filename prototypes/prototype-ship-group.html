@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>船舶分组 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .tabSwitch { display: flex; gap: 0; margin-bottom: 16px; }
+        .tabSwitchItem {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4e5464;
+            background: #fff;
+            border: 1px solid #ecedf0;
+            border-right: none;
+        }
+        .tabSwitchItem:first-child { border-radius: 4px 0 0 4px; }
+        .tabSwitchItem:last-child { border-radius: 0 4px 4px 0; border-right: 1px solid #ecedf0; }
+        .tabSwitchItem.active { background: #008c8c; color: #fff; border-color: #008c8c; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem active"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org.html'"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'"><span>👤</span>个人设置</div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'"><span>🚪</span>退出登录</div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">船舶业务</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">船舶分组</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">船舶编号</span>
+                    <input class="queryInput" type="text" placeholder="请输入船舶编号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">船舶名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入船舶名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">船舶IMO</span>
+                    <input class="queryInput" type="text" placeholder="请输入IMO号" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">MMSI编号</span>
+                    <input class="queryInput" type="text" placeholder="请输入MMSI" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">所属船队</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>远洋一队</option>
+                        <option>近海二队</option>
+                        <option>内河三队</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                    <button class="btn btnPrimary" style="background:#e6a23c;border-color:#e6a23c;font-weight:500;padding:0 20px;" onclick="openFleetModal()">⚓ 舰队管理</button>
+                </div>
+            </div>
+
+            <!-- Tab切换 -->
+            <div class="tabSwitch">
+                <div class="tabSwitchItem active" onclick="switchGroupTab(this,'ungrouped')">未分组</div>
+                <div class="tabSwitchItem" onclick="switchGroupTab(this,'grouped')">已分组</div>
+            </div>
+
+            <!-- 未分组列表 -->
+            <div id="ungrouped" class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">未分组船舶</div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>船舶编号</th>
+                                <th>船舶名称</th>
+                                <th>船舶IMO</th>
+                                <th>MMSI编号</th>
+                                <th>船舶类型</th>
+                                <th>载重吨</th>
+                                <th>资产原值</th>
+                                <th>资产估值</th>
+                                <th>币种</th>
+                                <th style="width:100px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>SH-2026-001</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋1号</span></td>
+                                <td>9876543</td>
+                                <td>412345001</td>
+                                <td>散货船</td>
+                                <td>82,000</td>
+                                <td>3,200万</td>
+                                <td>2,850万</td>
+                                <td>美元</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openJoinFleetModal('浙商远洋1号')">加入舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>SH-2026-002</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋2号</span></td>
+                                <td>9876544</td>
+                                <td>412345002</td>
+                                <td>集装箱船</td>
+                                <td>65,000</td>
+                                <td>4,500万</td>
+                                <td>4,100万</td>
+                                <td>美元</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openJoinFleetModal('浙商远洋2号')">加入舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>SH-2026-005</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">华海通达号</span></td>
+                                <td>9876547</td>
+                                <td>412345005</td>
+                                <td>油轮</td>
+                                <td>120,000</td>
+                                <td>6,800万</td>
+                                <td>6,200万</td>
+                                <td>美元</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openJoinFleetModal('华海通达号')">加入舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>SH-2026-008</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">东方明珠号</span></td>
+                                <td>9876550</td>
+                                <td>412345008</td>
+                                <td>化学品船</td>
+                                <td>45,000</td>
+                                <td>2,100万</td>
+                                <td>1,900万</td>
+                                <td>美元</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openJoinFleetModal('东方明珠号')">加入舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 4 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+
+            <!-- 已分组列表 -->
+            <div id="grouped" class="tableBox" style="display:none;">
+                <div class="tableHeader">
+                    <div class="tableTitle">已分组船舶</div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>船舶编号</th>
+                                <th>船舶名称</th>
+                                <th>船舶IMO</th>
+                                <th>MMSI编号</th>
+                                <th>船舶类型</th>
+                                <th>载重吨</th>
+                                <th>资产原值</th>
+                                <th>资产估值</th>
+                                <th>币种</th>
+                                <th>船队名称</th>
+                                <th style="width:100px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>SH-2026-003</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋3号</span></td>
+                                <td>9876545</td>
+                                <td>412345003</td>
+                                <td>散货船</td>
+                                <td>76,000</td>
+                                <td>2,900万</td>
+                                <td>2,600万</td>
+                                <td>美元</td>
+                                <td><span class="tag tagInfo">远洋一队</span></td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLinkDanger" onclick="confirmRemoveFleet('浙商远洋3号','远洋一队')">移除舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>SH-2026-004</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">浙商远洋4号</span></td>
+                                <td>9876546</td>
+                                <td>412345004</td>
+                                <td>集装箱船</td>
+                                <td>58,000</td>
+                                <td>3,800万</td>
+                                <td>3,500万</td>
+                                <td>美元</td>
+                                <td><span class="tag tagInfo">远洋一队</span></td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLinkDanger" onclick="confirmRemoveFleet('浙商远洋4号','远洋一队')">移除舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>SH-2026-006</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">近海先锋号</span></td>
+                                <td>9876548</td>
+                                <td>412345006</td>
+                                <td>杂货船</td>
+                                <td>32,000</td>
+                                <td>1,500万</td>
+                                <td>1,350万</td>
+                                <td>美元</td>
+                                <td><span class="tag tagSuccess">近海二队</span></td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLinkDanger" onclick="confirmRemoveFleet('近海先锋号','近海二队')">移除舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>SH-2026-007</td>
+                                <td><span class="linkCell" onclick="location.href='prototype-ship-detail.html'">内河顺达号</span></td>
+                                <td>9876549</td>
+                                <td>412345007</td>
+                                <td>冷藏船</td>
+                                <td>18,000</td>
+                                <td>980万</td>
+                                <td>850万</td>
+                                <td>美元</td>
+                                <td><span class="tag tagWarning">内河三队</span></td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLinkDanger" onclick="confirmRemoveFleet('内河顺达号','内河三队')">移除舰队</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 4 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 加入舰队弹窗 -->
+<div class="modalOverlay" id="joinFleetModal" style="display:none;">
+    <div class="modal" style="width:480px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="joinFleetTitle">加入舰队</span>
+            <span class="modalClose" onclick="closeModal('joinFleetModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="margin-bottom:12px;font-size:14px;color:#4e5464;">
+                将 <strong id="joinShipName">浙商远洋1号</strong> 加入舰队：
+            </div>
+            <div style="margin-bottom:12px;">
+                <input type="text" id="joinFleetSearch" placeholder="搜索舰队名称" oninput="filterJoinFleet()" style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;" />
+            </div>
+            <div style="border:1px solid #ecedf0;border-radius:4px;overflow:hidden;max-height:240px;overflow-y:auto;" id="joinFleetList">
+                <div class="joinFleetItem" style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ecedf0;cursor:pointer;" onmouseover="this.style.background='#f5f7fa'" onmouseout="this.style.background=''">
+                    <div>
+                        <div style="font-size:14px;color:#26272a;">远洋一队</div>
+                        <div style="font-size:12px;color:#8a8b8e;">已有 2 艘船舶</div>
+                    </div>
+                    <button class="btn btnPrimary" style="height:28px;padding:0 12px;font-size:13px;" onclick="confirmJoinFleet('远洋一队')">加入</button>
+                </div>
+                <div class="joinFleetItem" style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ecedf0;cursor:pointer;" onmouseover="this.style.background='#f5f7fa'" onmouseout="this.style.background=''">
+                    <div>
+                        <div style="font-size:14px;color:#26272a;">近海二队</div>
+                        <div style="font-size:12px;color:#8a8b8e;">已有 1 艘船舶</div>
+                    </div>
+                    <button class="btn btnPrimary" style="height:28px;padding:0 12px;font-size:13px;" onclick="confirmJoinFleet('近海二队')">加入</button>
+                </div>
+                <div class="joinFleetItem" style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onmouseover="this.style.background='#f5f7fa'" onmouseout="this.style.background=''">
+                    <div>
+                        <div style="font-size:14px;color:#26272a;">内河三队</div>
+                        <div style="font-size:12px;color:#8a8b8e;">已有 1 艘船舶</div>
+                    </div>
+                    <button class="btn btnPrimary" style="height:28px;padding:0 12px;font-size:13px;" onclick="confirmJoinFleet('内河三队')">加入</button>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('joinFleetModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 舰队管理弹窗 -->
+<div class="modalOverlay" id="fleetModal" style="display:none;">
+    <div class="modal" style="width:560px;">
+        <div class="modalHeader">
+            <span class="modalTitle">舰队管理</span>
+            <span class="modalClose" onclick="closeModal('fleetModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+                <input type="text" id="newFleetName" placeholder="输入新船队名称" style="flex:1;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;" />
+                <button class="btn btnPrimary" onclick="addFleet()">创建船队</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-size:14px;font-weight:500;color:#26272a;">船队列表</span>
+                <button class="btn btnDanger" style="height:28px;padding:0 10px;font-size:13px;" onclick="batchDeleteFleet()">批量删除</button>
+            </div>
+            <div style="border:1px solid #ecedf0;border-radius:4px;overflow:hidden;" id="fleetList">
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ecedf0;background:#fafafa;">
+                    <input type="checkbox" class="fleetCheck" /> <span style="flex:1;font-size:14px;color:#26272a;">远洋一队</span>
+                    <span style="font-size:13px;color:#8a8b8e;">2 艘</span>
+                    <button class="btnLinkDanger" onclick="deleteFleet('远洋一队')">删除</button>
+                </div>
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ecedf0;">
+                    <input type="checkbox" class="fleetCheck" /> <span style="flex:1;font-size:14px;color:#26272a;">近海二队</span>
+                    <span style="font-size:13px;color:#8a8b8e;">1 艘</span>
+                    <button class="btnLinkDanger" onclick="deleteFleet('近海二队')">删除</button>
+                </div>
+                <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;">
+                    <input type="checkbox" class="fleetCheck" /> <span style="flex:1;font-size:14px;color:#26272a;">内河三队</span>
+                    <span style="font-size:13px;color:#8a8b8e;">1 艘</span>
+                    <button class="btnLinkDanger" onclick="deleteFleet('内河三队')">删除</button>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('fleetModal')">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchGroupTab(el, tabId) {
+    document.querySelectorAll('.tabSwitchItem').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('ungrouped').style.display = tabId === 'ungrouped' ? 'block' : 'none';
+    document.getElementById('grouped').style.display = tabId === 'grouped' ? 'block' : 'none';
+}
+function openJoinFleetModal(name) {
+    document.getElementById('joinFleetTitle').textContent = '加入舰队 - ' + name;
+    document.getElementById('joinShipName').textContent = name;
+    document.getElementById('joinFleetSearch').value = '';
+    filterJoinFleet();
+    document.getElementById('joinFleetModal').style.display = 'flex';
+}
+function confirmJoinFleet(fleet) {
+    var ship = document.getElementById('joinShipName').textContent;
+    if(confirm('确认将 ' + ship + ' 加入 ' + fleet + '？')) { closeModal('joinFleetModal'); }
+}
+function filterJoinFleet() {
+    var kw = (document.getElementById('joinFleetSearch').value || '').toLowerCase();
+    document.querySelectorAll('#joinFleetList .joinFleetItem').forEach(function(el) {
+        var name = el.querySelector('div div').textContent.toLowerCase();
+        el.style.display = name.indexOf(kw) >= 0 ? '' : 'none';
+    });
+}
+function openFleetModal() { document.getElementById('fleetModal').style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmRemoveFleet(ship, fleet) { if(confirm('确认将 ' + ship + ' 从 ' + fleet + ' 移除？')) {} }
+function addFleet() { var n = document.getElementById('newFleetName').value; if(n) { alert('船队 "' + n + '" 创建成功'); document.getElementById('newFleetName').value=''; } }
+function deleteFleet(name) { if(confirm('确认删除船队 "' + name + '"？')) {} }
+function batchDeleteFleet() { if(confirm('确认批量删除选中的船队？')) {} }
+function toggleUserMenu() { document.getElementById('userDropdown').classList.toggle('show'); }
+document.addEventListener('click', function(e) { if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) { document.getElementById('userDropdown').classList.remove('show'); } });
+</script>
+</body>
+</html>

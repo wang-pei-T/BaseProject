@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>机构管理 - 金融租赁管理系统</title>
+    <link rel="stylesheet" href="prototype-layout.css">
+    <style>
+        .mainArea .content { width: 100%; max-width: 100%; }
+        .levelTag { font-size: 12px; padding: 2px 6px; border-radius: 2px; }
+        .levelTag.l1 { background: #e8f4ff; color: #1890ff; }
+        .levelTag.l2 { background: #e6f7f7; color: #008c8c; }
+        .levelTag.l3 { background: #f9f0ff; color: #722ed1; }
+    </style>
+</head>
+<body>
+<div class="pageContainer">
+    <div class="sidebar">
+        <div class="sidebarLogo">
+            <div class="sidebarLogoIcon">⚓</div>
+            <div class="sidebarLogoText">金融租赁系统</div>
+        </div>
+        <div class="sidebarMenu">
+            <div class="menuGroupTitle">船舶业务</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-group.html'"><span class="menuIcon">🚢</span>船舶分组</div>
+            <div class="menuItem" onclick="location.href='prototype-ship-manage.html'"><span class="menuIcon">📋</span>船舶管理</div>
+            <div class="menuGroupTitle">系统管理</div>
+            <div class="menuItem" onclick="location.href='prototype-user-list.html'"><span class="menuIcon">👤</span>用户管理</div>
+            <div class="menuItem active"><span class="menuIcon">🏢</span>机构管理</div>
+            <div class="menuItem" onclick="location.href='prototype-org-member.html'"><span class="menuIcon">👥</span>机构人员</div>
+            <div class="menuItem" onclick="location.href='prototype-role-list.html'"><span class="menuIcon">🔑</span>角色管理</div>
+            <div class="menuItem" onclick="location.href='prototype-menu.html'"><span class="menuIcon">📋</span>菜单管理</div>
+            <div class="menuGroupTitle">运营管理</div>
+            <div class="menuItem" onclick="location.href='prototype-tenant-list.html'"><span class="menuIcon">🏦</span>租户管理</div>
+            <div class="menuItem" onclick="location.href='prototype-dict.html'"><span class="menuIcon">📖</span>字典管理</div>
+            <div class="menuItem" onclick="location.href='prototype-config.html'"><span class="menuIcon">⚙️</span>配置中心</div>
+            <div class="menuGroupTitle">消息与日志</div>
+            <div class="menuItem" onclick="location.href='prototype-message.html'"><span class="menuIcon">💬</span>消息中心</div>
+            <div class="menuItem" onclick="location.href='prototype-audit-list.html'"><span class="menuIcon">📝</span>审计日志</div>
+        </div>
+    </div>
+
+    <div class="mainArea">
+        <div class="header" style="position:relative;">
+            <div class="headerLeft">
+                <div class="headerTool">☰</div>
+                <span style="color:#fff;font-size:14px;">租户侧管理控制台</span>
+            </div>
+            <div class="headerRight">
+                <div class="headerTool">🔔</div>
+                <div class="headerTool">❓</div>
+                <div class="headerUser" onclick="toggleUserMenu()">
+                    <div class="userAvatar">管</div>
+                    <span>租户管理员</span>
+                    <span style="font-size:11px;opacity:0.7;">▼</span>
+                </div>
+            </div>
+            <div class="userDropdown" id="userDropdown">
+                <div class="userDropdownItem" onclick="location.href='prototype-profile.html'">
+                    <span>👤</span>个人设置
+                </div>
+                <div class="userDropdownItem" onclick="location.href='prototype-login.html'">
+                    <span>🚪</span>退出登录
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb">
+            <span class="breadcrumbItem" onclick="location.href='prototype-index.html'">首页</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbItem">系统管理</span>
+            <span class="breadcrumbSep">›</span>
+            <span class="breadcrumbCurrent">机构管理</span>
+        </div>
+        <div class="content">
+            <!-- 查询区 -->
+            <div class="queryArea">
+                <div class="queryItem">
+                    <span class="queryLabel">机构名称</span>
+                    <input class="queryInput" type="text" placeholder="请输入机构名称" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">机构编码</span>
+                    <input class="queryInput" type="text" placeholder="请输入机构编码" />
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">状态</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option value="ENABLED">启用</option>
+                        <option value="DISABLED">禁用</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">上级机构</span>
+                    <select class="select">
+                        <option value="">全部</option>
+                        <option>无（顶级）</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>华南分部</option>
+                    </select>
+                </div>
+                <div class="queryItem">
+                    <span class="queryLabel">是否有效</span>
+                    <select class="select">
+                        <option value="1">有效</option>
+                        <option value="0">无效</option>
+                    </select>
+                </div>
+                <div class="queryActions">
+                    <button class="btn btnPrimary">查询</button>
+                    <button class="btn btnDefault">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="tableBox">
+                <div class="tableHeader">
+                    <div class="tableTitle">机构列表</div>
+                    <div class="tableActions">
+                        <button class="btn btnPrimary" onclick="openAddModal()">+ 新增机构</button>
+                        <button class="btn btnDefault">导出</button>
+                    </div>
+                </div>
+                <div class="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>机构名称</th>
+                                <th>机构编码</th>
+                                <th>层级</th>
+                                <th>上级机构</th>
+                                <th>人员数</th>
+                                <th>状态</th>
+                                <th>排序</th>
+                                <th>创建时间</th>
+                                <th style="width:200px;" class="actionColumn">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="linkCell" onclick="openDetailModal('总部')">总部</span></td>
+                                <td>HQ-001</td>
+                                <td><span class="levelTag l1">一级</span></td>
+                                <td style="color:#8a8b8e;">—</td>
+                                <td>3</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>1</td>
+                                <td>2026-01-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('总部')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('总部')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="linkCell" onclick="openDetailModal('华东分部')">华东分部</span></td>
+                                <td>HD-001</td>
+                                <td><span class="levelTag l2">二级</span></td>
+                                <td>总部</td>
+                                <td>5</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>1</td>
+                                <td>2026-01-05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('华东分部')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('华东分部')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="linkCell" onclick="openDetailModal('上海办事处')">上海办事处</span></td>
+                                <td>HD-SH-001</td>
+                                <td><span class="levelTag l3">三级</span></td>
+                                <td>华东分部</td>
+                                <td>2</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>1</td>
+                                <td>2026-01-10</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('上海办事处')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('上海办事处')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="linkCell" onclick="openDetailModal('南京办事处')">南京办事处</span></td>
+                                <td>HD-NJ-001</td>
+                                <td><span class="levelTag l3">三级</span></td>
+                                <td>华东分部</td>
+                                <td>1</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2</td>
+                                <td>2026-01-10</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('南京办事处')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('南京办事处')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="linkCell" onclick="openDetailModal('华南分部')">华南分部</span></td>
+                                <td>HN-001</td>
+                                <td><span class="levelTag l2">二级</span></td>
+                                <td>总部</td>
+                                <td>2</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>2</td>
+                                <td>2026-01-05</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('华南分部')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('华南分部')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><span class="linkCell" onclick="openDetailModal('广州办事处')">广州办事处</span></td>
+                                <td>HN-GZ-001</td>
+                                <td><span class="levelTag l3">三级</span></td>
+                                <td>华南分部</td>
+                                <td>1</td>
+                                <td><span class="tag tagSuccess">启用</span></td>
+                                <td>1</td>
+                                <td>2026-02-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('广州办事处')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('广州办事处')">编辑</button>
+                                        <button class="btnLinkDanger" onclick="confirmDisable()">禁用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><span class="linkCell" onclick="openDetailModal('华北分部')">华北分部</span></td>
+                                <td>HB-001</td>
+                                <td><span class="levelTag l2">二级</span></td>
+                                <td>总部</td>
+                                <td>0</td>
+                                <td><span class="tag tagDanger">禁用</span></td>
+                                <td>3</td>
+                                <td>2026-03-01</td>
+                                <td class="actionColumn">
+                                    <div class="actionButtons">
+                                        <button class="btnLink" onclick="openDetailModal('华北分部')">详情</button>
+                                        <button class="btnLink" onclick="openEditModal('华北分部')">编辑</button>
+                                        <button class="btnLink" onclick="confirmEnable()">启用</button>
+                                        <button class="btnLinkDanger" onclick="confirmInvalid()">置无效</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span class="pageInfo">共 7 条</span>
+                    <button class="pageBtn" disabled>«</button>
+                    <button class="pageBtn" disabled>‹</button>
+                    <button class="pageBtn active">1</button>
+                    <button class="pageBtn" disabled>›</button>
+                    <button class="pageBtn" disabled>»</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑机构弹窗 -->
+<div class="modalOverlay" id="orgModal" style="display:none;">
+    <div class="modal">
+        <div class="modalHeader">
+            <span class="modalTitle" id="orgModalTitle">新增机构</span>
+            <span class="modalClose" onclick="closeModal('orgModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="formModalRow">
+                <div class="label required">机构名称</div>
+                <div class="field"><input type="text" id="orgNameInput" placeholder="请输入机构名称" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label required">机构编码</div>
+                <div class="field"><input type="text" placeholder="如：HQ-001，租户内唯一" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">上级机构</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option value="">无（顶级机构）</option>
+                        <option>总部</option>
+                        <option>华东分部</option>
+                        <option>华南分部</option>
+                        <option>华北分部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">排序</div>
+                <div class="field"><input type="number" value="1" min="1" /></div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">状态</div>
+                <div class="field">
+                    <select style="width:100%;height:32px;padding:0 12px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px;outline:none;">
+                        <option>启用</option>
+                        <option>禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="formModalRow">
+                <div class="label">备注</div>
+                <div class="field"><textarea placeholder="请输入备注"></textarea></div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('orgModal')">取消</button>
+            <button class="btn btnPrimary" onclick="closeModal('orgModal')">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 机构详情弹窗 -->
+<div class="modalOverlay" id="detailModal" style="display:none;">
+    <div class="modal" style="width:580px;">
+        <div class="modalHeader">
+            <span class="modalTitle" id="detailModalTitle">机构详情</span>
+            <span class="modalClose" onclick="closeModal('detailModal')">✕</span>
+        </div>
+        <div class="modalBody">
+            <div class="infoGrid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+                <div class="infoItem">
+                    <span class="label">机构名称：</span>
+                    <span class="value" id="detailOrgName">总部</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">机构编码：</span>
+                    <span class="value">HQ-001</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">层级：</span>
+                    <span class="value"><span class="levelTag l1">一级</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">状态：</span>
+                    <span class="value"><span class="tag tagSuccess">启用</span></span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">上级机构：</span>
+                    <span class="value" style="color:#8a8b8e;">—</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">排序：</span>
+                    <span class="value">1</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">人员数：</span>
+                    <span class="value">3</span>
+                </div>
+                <div class="infoItem">
+                    <span class="label">创建时间：</span>
+                    <span class="value">2026-01-01</span>
+                </div>
+            </div>
+            <div style="border-top:1px solid #ecedf0;padding-top:16px;">
+                <div style="font-size:14px;font-weight:500;color:#26272a;margin-bottom:8px;">下级机构（3个）</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <span class="tag tagInfo">华东分部</span>
+                    <span class="tag tagInfo">华南分部</span>
+                    <span class="tag tagDefault">华北分部（禁用）</span>
+                </div>
+            </div>
+        </div>
+        <div class="modalFooter">
+            <button class="btn btnDefault" onclick="closeModal('detailModal')">关闭</button>
+            <button class="btn btnPrimary" onclick="closeModal('detailModal');openEditModal(document.getElementById('detailOrgName').textContent)">编辑</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('orgModalTitle').textContent = '新增机构';
+    document.getElementById('orgNameInput').value = '';
+    document.getElementById('orgModal').style.display = 'flex';
+}
+function openEditModal(name) {
+    document.getElementById('orgModalTitle').textContent = '编辑机构 - ' + name;
+    document.getElementById('orgNameInput').value = name;
+    document.getElementById('orgModal').style.display = 'flex';
+}
+function openDetailModal(name) {
+    document.getElementById('detailModalTitle').textContent = '机构详情 - ' + name;
+    document.getElementById('detailOrgName').textContent = name;
+    document.getElementById('detailModal').style.display = 'flex';
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function confirmDisable() { if(confirm('确认禁用该机构？')) {} }
+function confirmEnable() { if(confirm('确认启用该机构？')) {} }
+function confirmInvalid() { if(confirm('确认将该机构置为无效？置无效后该机构将从列表中不可见。')) {} }
+function toggleUserMenu() {
+    var dd = document.getElementById('userDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.headerUser') && !e.target.closest('.userDropdown')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+</script>
+</body>
+</html>
